@@ -67,7 +67,7 @@ public class TuioDemo : Form , TuioListener
 
             for (int i= 0;i<1000;i++)
             {
-                writeHtmlDocument();
+                writeHtmlDocument(i);
             }
 
 			this.ClientSize = new System.Drawing.Size(width, height);
@@ -198,7 +198,7 @@ public class TuioDemo : Form , TuioListener
 			Invalidate();
 		}
 
-    private void writeHtmlDocument()
+    private void writeHtmlDocument(int i)
     {
         using (FileStream fs = new FileStream("test.html", FileMode.Open))
         {
@@ -240,7 +240,7 @@ public class TuioDemo : Form , TuioListener
                                 // <span> element.
                                 writer.WriteLine();
                                 writer.Indent++;
-                                writer.Write("-------------- " + j + " -------------");
+                                writer.Write("-------------- " + i + " -------------");
                                 writer.WriteLine();
 
                                 // Controls the encoding of markup attributes
