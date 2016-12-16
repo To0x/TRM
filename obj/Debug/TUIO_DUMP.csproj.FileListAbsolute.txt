@@ -1,0 +1,5 @@
+C:\Users\Master\Desktop\TUIO11_NET-1.1.5\TUIO11_NET\bin\Debug\TuioDump.exe
+C:\Users\Master\Desktop\TUIO11_NET-1.1.5\TUIO11_NET\bin\Debug\TuioDump.pdb
+C:\Users\Master\Desktop\TUIO11_NET-1.1.5\TUIO11_NET\obj\Debug\TUIO_DUMP.csprojResolveAssemblyReference.cache
+C:\Users\Master\Desktop\TUIO11_NET-1.1.5\TUIO11_NET\obj\Debug\TuioDump.exe
+C:\Users\Master\Desktop\TUIO11_NET-1.1.5\TUIO11_NET\obj\Debug\TuioDump.pdb
