@@ -44,6 +44,9 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="GridElement.cs" />
+    <Compile Include="GridRow.cs" />
+    <Compile Include="HtmlParser.cs" />
     <Compile Include="OSC.NET\OSCBundle.cs" />
     <Compile Include="OSC.NET\OSCMessage.cs" />
     <Compile Include="OSC.NET\OSCPacket.cs" />
@@ -62,6 +65,7 @@
     <Compile Include="TUIO\TuioTime.cs" />
     <Compile Include="OSC.NET\OSCTimeTag.cs" />
     <Compile Include="TUIO\TuioBlob.cs" />
+    <Compile Include="WebElements\WebElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -69,4 +73,5 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
+  <ItemGroup />
 </Project>
