@@ -1,8 +1,0 @@
-C:\Users\Master\Desktop\TUIO11_NET-1.1.5\TUIO11_NET\bin\Debug\TuioDemo.exe
-C:\Users\Master\Desktop\TUIO11_NET-1.1.5\TUIO11_NET\bin\Debug\TuioDemo.pdb
-C:\Users\Master\Desktop\TUIO11_NET-1.1.5\TUIO11_NET\obj\Debug\TuioDemo.exe
-C:\Users\Master\Desktop\TUIO11_NET-1.1.5\TUIO11_NET\obj\Debug\TuioDemo.pdb
-C:\Users\Master\Desktop\TUI_Prog\obj\Debug\TuioDemo.exe
-C:\Users\Master\Desktop\TUI_Prog\obj\Debug\TuioDemo.pdb
-C:\Users\Master\Desktop\TUI_Prog\bin\Debug\TuioDemo.exe
-C:\Users\Master\Desktop\TUI_Prog\bin\Debug\TuioDemo.pdb
