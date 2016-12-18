@@ -12,6 +12,8 @@ namespace TUI_Web.Export
 
         private HtmlTextWriter writer = null;
         private Settings.SettingsControler settingsControler = null;
+		public Object lockObjekt = new Object();
+		private bool writingInProgress = false;
         
         public ExportControler(int refreshRate, string filePath = "./test.html")
         {
@@ -26,18 +28,28 @@ namespace TUI_Web.Export
         }
 
         // export the current content to the html-file
-        public void exportToHtml(List<GridRow> rows)
+        public void exportToHtml(object sender, List<GridRow> rows)
         {
-            writer.RenderBeginTag(HtmlTextWriterTag.Html);
-            {
-                writeHead();
-                writeBody(rows);
-            }
-            writer.RenderEndTag();
-            writer.Flush();
-
+			writingInProgress = true;
+			lock(lockObjekt)
+			{
+				writer.RenderBeginTag(HtmlTextWriterTag.Html);
+				{
+					writeHead();
+					writeBody(rows);
+				}
+				writer.RenderEndTag();
+				writer.Flush();
+			}
+			writingInProgress = false;
             EVENT_exportFinished?.Invoke(this, null);
         }
+
+		public bool getLockState()
+		{
+			return writingInProgress;
+		}
+
 
         public void close()
         {

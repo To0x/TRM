@@ -35,11 +35,16 @@ namespace TUI_Web
             dataControler = new Data.DataControler(Data.TestData.generateTestData());
             exportControler = new Export.ExportControler(settingsControler);
 
+			// if new data comes over the TCP-Connection send it to DataControler
             inputControler.EVENT_newObject += dataControler.InputListener_EVENT_newObject;
             inputControler.EVENT_removeObject += dataControler.InputListener_EVENT_removeObject;
             inputControler.EVENT_updateObject += dataControler.InputListener_EVENT_updateObject;
 
+			// if the html-export is finished call appControler function
             exportControler.EVENT_exportFinished += ExportControler_EVENT_exportFinished;
+
+			// if the data if parsed to internal format correctly call exportToHtml
+			dataControler.EVENT_dataUpdated += exportControler.exportToHtml;
 
             // threads
             // TCP-Server for data is listening as a threads
@@ -49,7 +54,7 @@ namespace TUI_Web
             // thread for Exporting data
             //Thread exporterThread = new Thread(exportControler.listen);
             //exporterThread.Start();
-            exportControler.exportToHtml(dataControler.getData());
+            exportControler.exportToHtml(this, dataControler.getData());
         }
 
         private void ExportControler_EVENT_exportFinished(object sender, EventArgs e)
@@ -60,8 +65,17 @@ namespace TUI_Web
         public void close()
         {
             inputControler.disconnect();
+			listenerThread.Abort();
+
+			// wait until the export is finished
+			while (exportControler.getLockState())
+			{
+				Console.WriteLine("locked");
+				Thread.Sleep(100);
+			}
+
+
             exportControler.close();
-            listenerThread.Abort();
             listenerThread = null;
             dataControler = null;
             exportControler = null;
