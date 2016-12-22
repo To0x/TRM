@@ -4,14 +4,16 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using TUI_Web;
+using TUI_Web.Settings;
 
 public enum ElementTypes { None, Topic, Text, Graphic };
+
 
 public class GridElement
 {
 	// Die Größe des Bootstrap-Grids
-	// Bsp. col-md-4
-	public int size = 4;
+	// Bsp. col-md-4 (errechnet sich aus Gesamtgröße / Anzahl Elemente
+	public int size = SettingsControler.BOOTSTRAP_SIZE / SettingsControler.GRID_ELEMENTS;
 
 	// ist die Zelle markiert?
 	// wird auf der Seite hervorgehoben dargestellt

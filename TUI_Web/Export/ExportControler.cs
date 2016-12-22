@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Web.UI;
+using TUI_Web.Settings;
 
 namespace TUI_Web.Export
 {
@@ -18,21 +19,24 @@ namespace TUI_Web.Export
         public ExportControler(int refreshRate, string filePath = "./test.html")
         {
             settingsControler = new Settings.SettingsControler(refreshRate, filePath);
-            createHtmlWriter();
+            //createHtmlWriter();
         }
 
         public ExportControler(Settings.SettingsControler settings)
         {
             settingsControler = settings;
-            createHtmlWriter();
+            //createHtmlWriter();
         }
 
         // export the current content to the html-file
         public void exportToHtml(object sender, List<GridRow> rows)
         {
+			createHtmlWriter();
 			writingInProgress = true;
 			lock(lockObjekt)
 			{
+				// Datie nicht immer neu schreiben, sondern erneuern!
+				//File.WriteAllText(settingsControler.getFileLocation(), String.Empty);
 				writer.RenderBeginTag(HtmlTextWriterTag.Html);
 				{
 					writeHead();
@@ -42,6 +46,7 @@ namespace TUI_Web.Export
 				writer.Flush();
 			}
 			writingInProgress = false;
+			close();
             EVENT_exportFinished?.Invoke(this, null);
         }
 
@@ -51,10 +56,11 @@ namespace TUI_Web.Export
 		}
 
 
-        public void close()
+        private void close()
         {
             writer.Flush();
             writer.Close();
+			writer = null;
         }
 
         // is used to create the HtmlTextWriter-Class
@@ -93,7 +99,7 @@ namespace TUI_Web.Export
         private void writeRow(GridRow row)
         {
             writer.WriteLine();
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, String.Format("col-md-{0} col-sm-{0}", GridRow.MAX_BOOTSTRAP_SIZE));
+			writer.AddAttribute(HtmlTextWriterAttribute.Class, String.Format("col-md-{0} col-sm-{0}", SettingsControler.BOOTSTRAP_SIZE));
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
 
 

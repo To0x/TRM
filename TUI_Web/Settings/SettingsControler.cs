@@ -11,6 +11,9 @@ namespace TUI_Web.Settings
         private int refreshRate;
         private string fileLocation;
 
+		public const int GRID_ELEMENTS = 3;
+		public const int BOOTSTRAP_SIZE = 12;
+
         public SettingsControler()
         {
 

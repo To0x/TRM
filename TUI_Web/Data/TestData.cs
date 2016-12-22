@@ -19,7 +19,7 @@ namespace TUI_Web.Data
                 {
                     default:
                         {
-                            row.elements[i].cursor = true;
+                            //row.elements[i].cursor = true;
                             break;
                         }
                 }

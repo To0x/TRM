@@ -23,7 +23,9 @@ namespace TUI_Web
 
         private Settings.SettingsControler settingsControler { get; set; } = null;
 
-        private Thread listenerThread = null;
+		// is the website already opened in browser?
+		private bool opened = false;
+
         #endregion
 
         public AppControler(MainView view, Settings.SettingsControler settings)
@@ -46,26 +48,26 @@ namespace TUI_Web
 			// if the data if parsed to internal format correctly call exportToHtml
 			dataControler.EVENT_dataUpdated += exportControler.exportToHtml;
 
-            // threads
-            // TCP-Server for data is listening as a threads
-            listenerThread = new Thread(inputControler.connect);
-            listenerThread.Start();
+			// start udp-listener (connect also creates a new thread)
+			inputControler.connect();
 
-            // thread for Exporting data
-            //Thread exporterThread = new Thread(exportControler.listen);
-            //exporterThread.Start();
-            exportControler.exportToHtml(this, dataControler.getData());
+			// create the first html-file to open
+			exportControler.exportToHtml(this, dataControler.getData());
         }
 
         private void ExportControler_EVENT_exportFinished(object sender, EventArgs e)
         {
-            // do smth. when export is finished? 
+			if (!opened)
+			{
+				// open webbrowser?
+				opened =! opened;
+			}
+			// do smth.
         }
 
         public void close()
         {
             inputControler.disconnect();
-			listenerThread.Abort();
 
 			// wait until the export is finished
 			while (exportControler.getLockState())
@@ -74,9 +76,6 @@ namespace TUI_Web
 				Thread.Sleep(100);
 			}
 
-
-            exportControler.close();
-            listenerThread = null;
             dataControler = null;
             exportControler = null;
             inputControler = null;

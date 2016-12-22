@@ -15,17 +15,18 @@ namespace TUI_Web.Data
         public event EventHandler<TuioObject> EVENT_removeObject;
 
         private TuioClient client;
-        private Dictionary<long, TuioObject> objectList;
-        //private Dictionary<long, TuioCursor> cursorList;
-        //private Dictionary<long, TuioBlob> blobList;
-        //private object cursorSync = new object();
+        /*
+         private Dictionary<long, TuioObject> objectList;
+        private Dictionary<long, TuioCursor> cursorList;
+        private Dictionary<long, TuioBlob> blobList;
+        private object cursorSync = new object();
         private object objectSync = new object();
-        //private object blobSync = new object();
-
+        private object blobSync = new object();
+		*/
 
         public InputControler(int port = 3333)
         {
-            objectList = new Dictionary<long, TuioObject>(128);
+            //objectList = new Dictionary<long, TuioObject>(128);
             client = new TuioClient(port);
         }
 
