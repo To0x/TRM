@@ -83,15 +83,41 @@ namespace TUI_Web.Export
 
         private void writeElement(GridElement element)
         {
-            string test = String.Format("col-md-{0}", element.size);
+			string containerClass = String.Format("col-md-{0}", element.size);
 
             if (element.cursor == true)
             {
-                test += String.Format(" cursor");
+                containerClass += String.Format(" cursor");
             }
 
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, test);
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, containerClass);
+
+			switch (element.type)
+			{
+				case ElementTypes.None:
+					writer.RenderBeginTag(HtmlTextWriterTag.Div);
+					break;
+
+				case ElementTypes.Graphic:
+					writer.AddAttribute(HtmlTextWriterAttribute.Src, ElementDataHolder.getImageSourcePath());
+					writer.RenderBeginTag(HtmlTextWriterTag.Img);
+					break;
+
+				case ElementTypes.Text:
+					writer.RenderBeginTag(HtmlTextWriterTag.Div);
+					writer.Write(ElementDataHolder.getTextContent());
+					break;
+
+				case ElementTypes.Topic:
+					writer.RenderBeginTag(HtmlTextWriterTag.H1);
+					writer.Write(ElementDataHolder.getTopicContent());
+					break;
+			}
+
+
+			//writer.WriteLine(ElementDataHolder.getHtmlContent(element.type));
+
+            //writer.RenderBeginTag(HtmlTextWriterTag.Div);
             writer.RenderEndTag();
             writer.WriteLine();
         }

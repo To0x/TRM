@@ -10,12 +10,20 @@ public class GridRow : IEnumerable<GridRow>
     // Eine Zeile besteht immer aus 3 Elementen
     public GridElement[] elements = new GridElement[SettingsControler.GRID_ELEMENTS];
 
-    public GridRow()
+	public GridRow(GridElement[] elements = null)
     {
-        for (int i = 0; i < elements.Length; i++)
-        {
-            elements[i] = new GridElement();
-        }
+		if (elements == null)
+		{
+			this.elements = new GridElement[SettingsControler.GRID_ELEMENTS];
+			for (int i = 0; i < SettingsControler.GRID_ELEMENTS; i++)
+			{
+				this.elements[i] = new GridElement();
+			}
+		}
+		else
+		{
+			this.elements = elements;
+		}
     }
 
     public IEnumerator<GridRow> GetEnumerator()

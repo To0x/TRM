@@ -14,6 +14,8 @@ namespace TUI_Web.Settings
 		public const int GRID_ELEMENTS = 3;
 		public const int BOOTSTRAP_SIZE = 12;
 
+		public const int LINES_DISPLAYED = 3;
+
         public SettingsControler()
         {
 

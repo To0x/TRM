@@ -11,7 +11,7 @@ namespace TUI_Web.Data
         public static List<GridRow> generateTestData()
         {
             List<GridRow> rows = new List<GridRow>();
-            for (int i = 0; i < 3; i++)
+			for (int i = 0; i < Settings.SettingsControler.LINES_DISPLAYED; i++)
             {
                 GridRow row = new GridRow();
 

@@ -35,4 +35,9 @@ public class GridElement
 		// needed?
 	}
 
+	public void setCursor()
+	{
+		cursor = true;
+	}
+
 }

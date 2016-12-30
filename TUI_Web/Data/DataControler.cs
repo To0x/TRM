@@ -14,13 +14,16 @@ namespace TUI_Web.Data
     {
 		public event EventHandler<List<GridRow>> EVENT_dataUpdated;
         private List<GridRow> rows;
-		private GridElement markedElement;
+		private GridElement oldElement;
 
         public DataControler(List<GridRow> rows = null)
         {
             if (rows == null)
             {
-                // initialize rows
+				for (int i = 0; i < Settings.SettingsControler.LINES_DISPLAYED; i++)
+				{
+					rows.Add(new GridRow());
+				}
             } else
             {
                 this.rows = rows;
@@ -33,11 +36,17 @@ namespace TUI_Web.Data
             return this.rows;
         }
 
+		private void doStuff(TUIO.TuioObject obj)
+		{
+			GridElement element = getElement(obj);
+			setNewElement(element);
+			element.cursor = true;
+			element.type = getType(obj);
+		}
+
         public void InputListener_EVENT_updateObject(object sender, TUIO.TuioObject obj)
         {
-			setCursorAndType(obj);
-
-            // what to do, wenn an object is updated?
+			doStuff(obj);
 			// TODO
 			Console.WriteLine("update object( " + obj.SymbolID + " ) x=" + obj.Position.X + "y=" + obj.Position.Y);
 			EVENT_dataUpdated?.Invoke(this, rows);
@@ -53,39 +62,59 @@ namespace TUI_Web.Data
 
 		public void InputListener_EVENT_newObject(object sender, TUIO.TuioObject obj)
 		{
-			setCursorAndType(obj);
-
-            // what to do, wenn an object is created?
+			doStuff(obj);
+			// what to do, wenn an object is created?
 			// TODO
 			Console.WriteLine("new object -->" + obj.SymbolID);
 			EVENT_dataUpdated?.Invoke(this, rows);
         }
 
-		private void setCursorAndType(TUIO.TuioObject obj)
+		private void setNewElement(GridElement element)
 		{
-			if (markedElement != null)
-				markedElement.cursor = false;
+			if (oldElement != null)
+			{
+				oldElement.cursor = false;
+				// TODO: Was war vorher da? Was passiert, wenn man über eine Grafik eine Überschrift legt?
+				// TODO: aktuell gibt es immer nur ein Element auf der Oberfläche
+				// TODO: Mittels klick muss dieses Element gespeichert werden - implementieren!
+				oldElement.type = ElementTypes.None;
+			}
 
+			oldElement = element;
+		}
+
+		private GridElement getElement(TUIO.TuioObject obj)
+		{
+			GridElement element = null;
+			int x = -1, y = -1;
 
 			try
 			{
-				int x = -1, y = -1;
-				GridElement element = null;
-
 				getPosition(obj.Position, ref x, ref y);
-				element = rows[0].elements[x];
-				element.type = getType(obj);
-				element.cursor = true;
-				markedElement = element;
+				element = rows[y].elements[x];
 			}
 			catch (Exception e)
 			{
-				System.Console.WriteLine(e.Message);
+				System.Console.WriteLine(e.Message);	
 			}
+
+			return element;
+		}
+
+
+		private void setCursor(GridElement element)
+		{
+			//if (oldElement != null)
+			//	oldElement.cursor = false;
+
+			element.cursor = true;
+			//oldElement = element;
 		}
 
 		private void getPosition(TUIO.TuioPoint p, ref int x, ref int y)
 		{
+			x = -1;
+			y = -1;
 			// Position des Elementes anhand der Gesamtanzahl der Elemente berechnen
 			// z.B Pro Zeile 3 Elemente:
 			// linkes Feld == Position.X < 1/3 
@@ -100,17 +129,17 @@ namespace TUI_Web.Data
 				}
 			}
 
-			// richtige Zeile finden
-			/*
 			IEnumerator<GridRow> rowEnum = rows.GetEnumerator();
-			do
+			for (int i = 0; i <= SettingsControler.LINES_DISPLAYED; i++)
 			{
 				rowEnum.MoveNext();
-			} while (--x == 0);
 
-			rowEnum.Current.elements[y].type = getType(e);
-			*/
-			y = 0;
+				if (p.Y < ((float)(i + 1) / (float)SettingsControler.LINES_DISPLAYED))
+				{
+					y = i;
+					break;
+				}
+			}
 		}
 
 		private ElementTypes getType(TUIO.TuioObject obj)
