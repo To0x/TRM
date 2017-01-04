@@ -7,14 +7,35 @@ using TUI_Web.Settings;
 
 namespace TUI_Web.Data
 {
-	// Main Controler to parse data from extern TUI-Controler to internal representation
-	// if parsing is finished call EVENT_dataUpdated!
-	 
+    // Main Controler to parse data from extern TUI-Controler to internal representation
+    // if parsing is finished call EVENT_dataUpdated!
+
+    /*public class DataUpdatedArguments : EventArgs
+    {
+        public List<GridRow> rows;
+        public Dictionary<int, GridElement> cursorElements;
+
+        public DataUpdatedArguments(List<GridRow> rows, Dictionary<int, CursorElement> cursorElements)
+        {
+            this.rows = rows;
+            this.cursorElements = cursorElements;
+        }
+    }
+
+    public struct CursorElement
+    {
+        public GridElement element;
+        public int row;
+        public int cell;
+    }
+    */
+
     class DataControler
     {
-		public event EventHandler<List<GridRow>> EVENT_dataUpdated;
+        public event EventHandler<List<GridRow>> EVENT_dataUpdated;
         private List<GridRow> rows;
 		private GridElement oldElement;
+        private Dictionary<int, GridElement> currentElements;
 
         public DataControler(List<GridRow> rows = null)
         {
@@ -29,6 +50,7 @@ namespace TUI_Web.Data
                 this.rows = rows;
             }
 
+            currentElements = new Dictionary<int, GridElement>();
         }
 
         public List<GridRow> getData()
@@ -36,37 +58,75 @@ namespace TUI_Web.Data
             return this.rows;
         }
 
-		private void doStuff(TUIO.TuioObject obj)
+		private void createNewObject(TUIO.TuioObject obj)
 		{
-			GridElement element = getElement(obj);
-			setNewElement(element);
-			element.cursor = true;
-			element.type = getType(obj);
+            GridElement element = new GridElement();
+            element.cursor = true;
+            element.type = getType(obj);
+            setElementPosition(obj.Position, element);
+
+            /*
+            setElementPosition(obj.Position, element);
+            CursorElement current = new CursorElement();
+            setCursorPosition(obj.Position, current);
+            current.element = new GridElement();
+            current.element.cursor = true;
+            current.element.type = getType(obj);
+            //setNewElement(element);
+            */
+
+            try
+            {
+                currentElements.Add(obj.SymbolID, element);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
 		}
+
+        private GridElement updateObject(TUIO.TuioObject obj)
+        {
+            GridElement current = null;
+            try
+            {
+                currentElements.TryGetValue(obj.SymbolID, out current);
+            } catch (ArgumentNullException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            setElementPosition(obj.Position, current);
+            return current;
+        }
 
         public void InputListener_EVENT_updateObject(object sender, TUIO.TuioObject obj)
         {
-			doStuff(obj);
+			updateObject(obj);
 			// TODO
 			Console.WriteLine("update object( " + obj.SymbolID + " ) x=" + obj.Position.X + "y=" + obj.Position.Y);
-			EVENT_dataUpdated?.Invoke(this, rows);
+            EVENT_dataUpdated?.Invoke(this, rows);
+            //EVENT_dataUpdated2?.Invoke(this, new DataUpdatedArguments(rows, currentElements));
         }
 
         public void InputListener_EVENT_removeObject(object sender, TUIO.TuioObject obj)
         {
+            currentElements.Remove(obj.SymbolID);
             // what to do, wenn an object is removed?
 			// TODO
 			Console.WriteLine("remove object -->" + obj.SymbolID);
 			EVENT_dataUpdated?.Invoke(this, rows);
+            //EVENT_dataUpdated2?.Invoke(this, new DataUpdatedArguments(rows, currentElements));
         }
 
 		public void InputListener_EVENT_newObject(object sender, TUIO.TuioObject obj)
 		{
-			doStuff(obj);
+            createNewObject(obj);
 			// what to do, wenn an object is created?
 			// TODO
 			Console.WriteLine("new object -->" + obj.SymbolID);
-			EVENT_dataUpdated?.Invoke(this, rows);
+            EVENT_dataUpdated?.Invoke(this, rows);
+            //EVENT_dataUpdated2?.Invoke(this, new DataUpdatedArguments(rows, currentElements));
         }
 
 		private void setNewElement(GridElement element)
@@ -83,24 +143,29 @@ namespace TUI_Web.Data
 			oldElement = element;
 		}
 
-		private GridElement getElement(TUIO.TuioObject obj)
+        /*
+		private CursorElement createCursorElement(TUIO.TuioObject obj)
 		{
-			GridElement element = null;
+            CursorElement cursorElement = new CursorElement();
+			//GridElement element = null;
 			int x = -1, y = -1;
 
 			try
 			{
 				getPosition(obj.Position, ref x, ref y);
-				element = rows[y].elements[x];
+                cursorElement.row = x;
+                cursorElement.cell = y;
+                //cursorElement.element = rows[x].elements[y];
+				//element = rows[y].elements[x];
 			}
 			catch (Exception e)
 			{
 				System.Console.WriteLine(e.Message);	
 			}
 
-			return element;
+			return cursorElement;
 		}
-
+        */
 
 		private void setCursor(GridElement element)
 		{
@@ -110,6 +175,23 @@ namespace TUI_Web.Data
 			element.cursor = true;
 			//oldElement = element;
 		}
+
+        private void setElementPosition(TUIO.TuioPoint p, GridElement element)
+        {
+            int x = -1, y = -1;
+            getPosition(p, ref x, ref y);
+            rows[x].elements[y].overlayElement = element;
+        }
+
+        /*
+        private void setCursorPosition(TUIO.TuioPoint p, CursorElement cursor)
+        {
+            int x = -1, y = -1;
+            getPosition(p, ref x, ref y);
+            cursor.row = x;
+            cursor.cell = y;
+        }
+        */
 
 		private void getPosition(TUIO.TuioPoint p, ref int x, ref int y)
 		{

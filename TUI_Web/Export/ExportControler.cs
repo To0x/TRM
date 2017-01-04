@@ -28,6 +28,18 @@ namespace TUI_Web.Export
             //createHtmlWriter();
         }
 
+        /*
+        public void exportToHtml(object sender, TUI_Web.Data.DataUpdatedArguments args)
+        {
+            exportToHtml(sender, args.rows, args.cursorElements);
+
+            foreach (KeyValuePair<int, Data.CursorElement> cursorElement in args.cursorElements)
+            {
+
+            }
+        }
+        */
+
         // export the current content to the html-file
         public void exportToHtml(object sender, List<GridRow> rows)
         {
@@ -49,6 +61,13 @@ namespace TUI_Web.Export
 			close();
             EVENT_exportFinished?.Invoke(this, null);
         }
+
+        /*
+        private void exportToHtml(object sender, List<GridRow> rows, Dictionary<int, Data.CursorElement> cursors)
+        {
+            exportToHtml(sender, rows);
+        }
+        */
 
 		public bool getLockState()
 		{
@@ -83,16 +102,24 @@ namespace TUI_Web.Export
 
         private void writeElement(GridElement element)
         {
-			string containerClass = String.Format("col-md-{0}", element.size);
+            GridElement workingElement = null;
 
-            if (element.cursor == true)
+            // Falls aktuell ein Element auf der Oberfläche liegt wird das gesicherte Element überdeckt
+            if (element.overlayElement != null)
+                workingElement = element.overlayElement;
+            else
+                workingElement = element;
+
+			string containerClass = String.Format("col-md-{0}", workingElement.size);
+
+            if (workingElement.cursor == true)
             {
                 containerClass += String.Format(" cursor");
             }
 
             writer.AddAttribute(HtmlTextWriterAttribute.Class, containerClass);
 
-			switch (element.type)
+			switch (workingElement.type)
 			{
 				case ElementTypes.None:
 					writer.RenderBeginTag(HtmlTextWriterTag.Div);
