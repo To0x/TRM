@@ -1,90 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TUI_Web.Settings;
 
 namespace TUI_Web.Data
 {
-	// this class is only for this Controler, to save the position of the elements
-	// to reset cursors and smth. else for existing objects
-	class CursorElement
-	{
-		private GridElement element;
-		private int row;
-		private int cell;
-
-		public CursorElement()
-		{
-			element = new GridElement();
-			row = -1;
-			cell = -1;
-		}
-
-		public void getPosition(ref int x, ref int y)
-		{
-			x = row;
-			y = cell;
-		}
-
-		public int getRow()
-		{
-			return row;
-		}
-
-		public int getCell()
-		{
-			return cell;
-		}
-
-		public GridElement getElement()
-		{
-			return element;
-		}
-
-		public void setElement(GridElement element)
-		{
-			this.element = element;
-		}
-
-		public void writeCursorPosition(TUIO.TuioObject obj)
-		{
-			// Position des Elementes anhand der Gesamtanzahl der Elemente berechnen
-			// z.B Pro Zeile 3 Elemente:
-			// linkes Feld == Position.X < 1/3 
-			// mittleres Feld == Position.X < 2/3
-			// rechtes Feld == Position.X < 1
-			TUIO.TuioPoint p = obj.Position;
-			for (int i = 0; i <= SettingsControler.GRID_ELEMENTS; i++)
-			{
-				if (p.X < ((float)(i + 1) / (float)SettingsControler.GRID_ELEMENTS))
-				{
-					row = i;
-					break;
-				}
-			}
-
-			IEnumerator<GridRow> rowEnum = rows.GetEnumerator();
-			for (int i = 0; i <= SettingsControler.LINES_DISPLAYED; i++)
-			{
-				rowEnum.MoveNext();
-
-				if (p.Y < ((float)(i + 1) / (float)SettingsControler.LINES_DISPLAYED))
-				{
-					cell = i;
-					break;
-				}
-			}
-		}
-	}
-
 	class DataControler
 	{
 		public event EventHandler<List<GridRow>> EVENT_dataUpdated;
 		private List<GridRow> rows;
-		private GridElement oldElement;
-		private Dictionary<int, CursorElement> currentElements;
+		private Dictionary<int, CursorElement> cursorElements;
 
 		public DataControler(List<GridRow> rows = null)
 		{
@@ -100,7 +23,7 @@ namespace TUI_Web.Data
 				this.rows = rows;
 			}
 
-			currentElements = new Dictionary<int, CursorElement>();
+			cursorElements = new Dictionary<int, CursorElement>();
 		}
 
 		public List<GridRow> getData()
@@ -113,7 +36,7 @@ namespace TUI_Web.Data
 			CursorElement cursor = new CursorElement();
 			try
 			{
-				currentElements.Add(obj.SymbolID, cursor);
+				cursorElements.Add(obj.SymbolID, cursor);
 			}
 			catch (Exception e)
 			{
@@ -126,48 +49,8 @@ namespace TUI_Web.Data
 		private CursorElement getExistingElement(TUIO.TuioObject obj) 
 		{
 			CursorElement cursor = default(CursorElement);
-			currentElements.TryGetValue(obj.SymbolID, out cursor);
+			cursorElements.TryGetValue(obj.SymbolID, out cursor);
 			return cursor;
-		}
-
-		private bool removeExistingElement(TUIO.TuioObject obj)
-		{
-			try
-			{
-				currentElements.Remove(obj.SymbolID);
-				return true;
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.Message);
-				return false;
-			}
-
-		}
-
-		private bool updateExistingObject(TUIO.TuioObject obj)
-		{
-			try
-			{
-
-				CursorElement cursor = getExistingElement(obj);
-
-				// alten Cursor löschen
-				removeOverlayElement(cursor);
-
-				// neue Position errechnen
-				cursor.writeCursorPosition(obj);
-
-				// neue Position ins Grid schreiben
-				setOverlayElement(cursor);
-
-				return true;
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.Message);
-				return false;
-			}
 		}
 
 		private void setOverlayElement(CursorElement cursor)
@@ -179,6 +62,11 @@ namespace TUI_Web.Data
 		{
 			rows[cursor.getRow()].elements[cursor.getCell()].overlayElement = null;
 		}
+
+        private void setRealElement(CursorElement cursor)
+        {
+            rows[cursor.getRow()].elements[cursor.getCell()] = cursor.getElement();
+        }
 
 		private ElementTypes getType(TUIO.TuioObject obj)
 		{
@@ -224,7 +112,7 @@ namespace TUI_Web.Data
 		{
 			try
 			{
-				currentElements.Remove(obj.SymbolID);
+				cursorElements.Remove(obj.SymbolID);
 				Console.WriteLine("remove object -->" + obj.SymbolID);
 				EVENT_dataUpdated?.Invoke(this, rows);
 			}
@@ -251,6 +139,15 @@ namespace TUI_Web.Data
 				Console.WriteLine(e.Message);
 			}
 		}
+
+        public void InputListener_EVENT_save(object sender, TUIO.TuioObject obj)
+        {
+            foreach (KeyValuePair<int, CursorElement> cursor  in cursorElements)
+            {
+                removeOverlayElement(cursor.Value);
+                setRealElement(cursor.Value);
+            }
+        }
 		#endregion
 	}
 }

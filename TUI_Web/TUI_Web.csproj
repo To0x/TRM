@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppControler.cs" />
+    <Compile Include="Data\CursorElement.cs" />
     <Compile Include="Data\DataControler.cs" />
     <Compile Include="Data\GridElement.cs" />
     <Compile Include="Data\GridRow.cs" />
