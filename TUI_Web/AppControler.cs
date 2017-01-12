@@ -53,6 +53,9 @@ namespace TUI_Web
 
 			// create the first html-file to open
 			exportControler.exportToHtml(this, dataControler.getData());
+
+
+            mainView.EVENT_View_SaveClicked += dataControler.save;
         }
 
         private void ExportControler_EVENT_exportFinished(object sender, EventArgs e)

@@ -15,6 +15,8 @@ namespace TUI_Web
         private bool running = false;
         private AppControler appControler = null;
 
+        public event EventHandler EVENT_View_SaveClicked;
+
         public MainView()
         {
             InitializeComponent();
@@ -22,7 +24,7 @@ namespace TUI_Web
 
         private void btn_save_Click(object sender, EventArgs e)
         {
-
+            EVENT_View_SaveClicked?.Invoke(sender, e);
         }
 
         private void protectAllFields(bool protect = true)
@@ -31,7 +33,7 @@ namespace TUI_Web
             {
                 txt_autoRefresh.Enabled = false;
                 btn_setLocation.Enabled = false;
-                btn_save.Enabled = false;
+                //btn_save.Enabled = false;
                 btn_start.Text = "Stop";
                 lab_running.Text = "running";
                 lab_running.Visible = true;

@@ -11,10 +11,29 @@ namespace TUI_Web.Settings
         private int refreshRate;
         private string fileLocation;
 
-		public const int GRID_ELEMENTS = 3;
-		public const int BOOTSTRAP_SIZE = 12;
+        public const int GRID_ELEMENTS = 3;
+        public const int BOOTSTRAP_SIZE = 12;
 
-		public const int LINES_DISPLAYED = 3;
+        public const int DEFAULT_ELEMENT_SIZE = BOOTSTRAP_SIZE / GRID_ELEMENTS;
+
+        public const int LINES_DISPLAYED = 3;
+
+        // tells how many size steps can be used while the element turned around.
+        // 10 steps is one complete round of the element (360°)
+        public const int SIZESTEPS_PER_CIRCLE = 10;
+
+        public const int MINIMUN_ELEMENT_SIZE = 2;
+        public const int MAXIMUM_ELEMENT_SIZE = BOOTSTRAP_SIZE;
+
+
+        public static bool DEFAULT_CURSOR_STATE = true;
+
+        // how much degrees have the angle to be changed, before the size will also be changed.
+        // for example: 360° includes 10 steps for size-changing. Each 36° degrees, the size will be changed
+        public static float sizeStep()
+        {
+            return 360 / SIZESTEPS_PER_CIRCLE;
+        }
 
         public SettingsControler()
         {

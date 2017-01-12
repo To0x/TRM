@@ -25,6 +25,10 @@ public class GridElement
     // existiert ein aktuelles Element auf der Oberfläche, welches das gesicherte Element überdeckt?
     public GridElement overlayElement = null;
 
+    public GridElement()
+    {
+        cursor = SettingsControler.DEFAULT_CURSOR_STATE;
+    }
 
 	/*public GridElement(long s_id, int f_id, float xpos, float ypos, float angle) : base(s_id, f_id, xpos, ypos, angle)
     {
