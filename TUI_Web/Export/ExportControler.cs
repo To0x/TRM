@@ -152,7 +152,7 @@ namespace TUI_Web.Export
         private void writeRow(GridRow row)
         {
             writer.WriteLine();
-			writer.AddAttribute(HtmlTextWriterAttribute.Class, String.Format("col-md-{0} col-sm-{0}", SettingsControler.BOOTSTRAP_SIZE));
+			writer.AddAttribute(HtmlTextWriterAttribute.Class, String.Format("col-md-{0}", SettingsControler.BOOTSTRAP_SIZE));
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
 
 

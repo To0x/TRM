@@ -15,14 +15,6 @@ namespace TUI_Web.Data
         public event EventHandler<TuioObject> EVENT_removeObject;
 
         private TuioClient client;
-        /*
-         private Dictionary<long, TuioObject> objectList;
-        private Dictionary<long, TuioCursor> cursorList;
-        private Dictionary<long, TuioBlob> blobList;
-        private object cursorSync = new object();
-        private object objectSync = new object();
-        private object blobSync = new object();
-		*/
 
         public InputControler(int port = 3333)
         {
@@ -59,6 +51,14 @@ namespace TUI_Web.Data
 
         // cursows and blobs are not implemented yet!
         #region notImplemented
+        /*
+        private Dictionary<long, TuioObject> objectList;
+        private Dictionary<long, TuioCursor> cursorList;
+        private Dictionary<long, TuioBlob> blobList;
+        private object cursorSync = new object();
+        private object objectSync = new object();
+        private object blobSync = new object();
+        */
         public void addTuioBlob(TuioBlob tblb)
         {
             //throw new NotImplementedException();

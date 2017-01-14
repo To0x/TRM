@@ -22,10 +22,14 @@ namespace TUI_Web.Settings
         // 10 steps is one complete round of the element (360°)
         public const int SIZESTEPS_PER_CIRCLE = 10;
 
+        // each element could not be smaller than the following size
         public const int MINIMUN_ELEMENT_SIZE = 2;
+
+        // each element could not be bigger than the following size
         public const int MAXIMUM_ELEMENT_SIZE = BOOTSTRAP_SIZE;
 
-
+        // should be false
+        // only enable if you want to see all grids at the same time
         public static bool DEFAULT_CURSOR_STATE = true;
 
         // how much degrees have the angle to be changed, before the size will also be changed.
