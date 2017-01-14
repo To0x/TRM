@@ -11,6 +11,9 @@ public class GridRow : IEnumerable<GridRow>
     public GridElement[] elements = new GridElement[SettingsControler.GRID_ELEMENTS];
     public int elementCount = -1;
 
+    private int affectedCount = 0;
+    private bool affected = false;
+
 	public GridRow(GridElement[] elements = null)
     {
 		if (elements == null)
@@ -35,8 +38,8 @@ public class GridRow : IEnumerable<GridRow>
         foreach (GridElement element in elements)
         {
             GridElement checkElement = null;
-            if (element.overlayElement != null)
-                checkElement = element.overlayElement;
+            if (element.getElement() != null)
+                checkElement = element.getElement();
             else
                 checkElement = element;
 
@@ -50,14 +53,50 @@ public class GridRow : IEnumerable<GridRow>
         return count;
     }
 
+    private void affectRow(bool affected)
+    {
+        if (affected)
+        {
+            this.affected = true;
+            foreach (GridElement element in elements)
+            {
+                // if there is already a element, we do not need to create new one
+                if (element.getElement() == null)
+                {
+                    element.setElement(new OverlayElement());
+                    element.getElement().type = element.type;
+                    element.getElement().size = element.size;
+                    element.getElement().cursor = element.cursor;
+                }
+            }
+        }
+        else
+        {
+            this.affected = false;
+            foreach (GridElement element in elements)
+            {
+                element.setElement(null);
+            }
+        }
+    }
+
+    public void increaseSizeAffected()
+    {
+        affectedCount++;
+        if (affectedCount > 0)
+            affectRow(true);
+        else
+            affectRow(false);
+    }
+
     public int getIncreasableElementCount(GridElement sender)
     {
         int count = 0;
         foreach (GridElement element in elements)
         {
             GridElement checkElement = null;
-            if (element.overlayElement != null)
-                checkElement = element.overlayElement;
+            if (element.getElement() != null)
+                checkElement = element.getElement();
             else
                 checkElement = element;
 
@@ -78,8 +117,8 @@ public class GridRow : IEnumerable<GridRow>
         foreach (GridElement element in elements)
         {
             GridElement checkElement = null;
-            if (element.overlayElement != null)
-                checkElement = element.overlayElement;
+            if (element.getElement() != null)
+                checkElement = element.getElement();
             else
                 checkElement = element;
 
@@ -96,8 +135,8 @@ public class GridRow : IEnumerable<GridRow>
         int biggest = SettingsControler.MINIMUN_ELEMENT_SIZE;
         foreach (GridElement element in elements)
         {
-            if (element.overlayElement.size != SettingsControler.MAXIMUM_ELEMENT_SIZE && element.size > biggest)
-                biggest = element.overlayElement.size;
+            if (element.getElement().size != SettingsControler.MAXIMUM_ELEMENT_SIZE && element.size > biggest)
+                biggest = element.getElement().size;
         }
 
         return biggest;
@@ -111,8 +150,8 @@ public class GridRow : IEnumerable<GridRow>
 
         foreach (GridElement element in elements)
         {
-            if (element.overlayElement != null)
-                checkElement = element.overlayElement;
+            if (element.getElement() != null)
+                checkElement = element.getElement();
             else
                 checkElement = element;
 

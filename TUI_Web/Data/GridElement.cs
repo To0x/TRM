@@ -8,6 +8,14 @@ using TUI_Web.Settings;
 
 public enum ElementTypes { None, Topic, Text, Graphic };
 
+public class OverlayElement : GridElement
+{
+    
+    public OverlayElement()
+    {
+        base.setElement(null);
+    }
+}
 
 public class GridElement
 {
@@ -23,7 +31,7 @@ public class GridElement
 	public ElementTypes type = ElementTypes.None;
 
     // existiert ein aktuelles Element auf der Oberfläche, welches das gesicherte Element überdeckt?
-    public GridElement overlayElement = null;
+    private OverlayElement overlayElement = null;
 
     public GridElement()
     {
@@ -47,9 +55,14 @@ public class GridElement
 		cursor = true;
 	}
 
-    public void setTempElement(GridElement element)
+    public void setElement(OverlayElement element)
     {
         overlayElement = element;
+    }
+
+    public OverlayElement getElement()
+    {
+        return overlayElement;
     }
 
 }

@@ -4,6 +4,25 @@ using TUI_Web.Settings;
 namespace TUI_Web.Data
 {
     public enum SizeChangingType { IncreaseOther, DecreaseOther, RemoveLast };
+
+    public class GridPosition
+    {
+        public int row;
+        public int cell;
+    }
+
+    public class CursorEventPositionArgs : EventArgs
+    {
+        public GridPosition oldPosition;
+        public GridPosition newPosition;
+
+        public CursorEventPositionArgs()
+        {
+            oldPosition = new GridPosition();
+            newPosition = new GridPosition();
+        }
+    }
+
     public class CursorEventSizeArgs : EventArgs
     {
         public SizeChangingType changeType { get; set; }
@@ -15,38 +34,41 @@ namespace TUI_Web.Data
     class CursorElement
     {
         public event EventHandler<CursorEventSizeArgs> EVENT_SizeChanged;
-        public event EventHandler EVENT_PositionChanged;
+        public event EventHandler<CursorEventPositionArgs> EVENT_PositionChanged;
 
-        private GridElement element;
-        private int row;
-        private int cell;
+        private OverlayElement element;
+
+        private GridPosition position;
+        //private int row;
+        //private int cell;
 
         private float angle;
 
         public CursorElement()
         {
-            element = new GridElement();
+            element = new OverlayElement();
+            position = new GridPosition();
             element.setCursor();
-            row = -1;
-            cell = -1;
+            position.row = -1;
+            position.cell = -1;
             angle = 0;
         }
 
         #region getterSetter
         public void getPosition(ref int x, ref int y)
         {
-            x = row;
-            y = cell;
+            x = position.row;
+            y = position.cell;
         }
 
         public int getRow()
         {
-            return row;
+            return position.row;
         }
 
         public int getCell()
         {
-            return cell;
+            return position.cell;
         }
 
         public float getAngle()
@@ -59,12 +81,12 @@ namespace TUI_Web.Data
             this.angle = angle;
         } 
 
-        public GridElement getElement()
+        public OverlayElement getElement()
         {
             return element;
         }
 
-        public void setElement(GridElement element)
+        public void setElement(OverlayElement element)
         {
             this.element = element;
         }
@@ -79,14 +101,19 @@ namespace TUI_Web.Data
             // rechtes Feld == Position.X < 1
             TUIO.TuioPoint p = obj.Position;
             bool positionChanged = false;
+            CursorEventPositionArgs posArgs = new CursorEventPositionArgs();
             for (int i = 0; i <= SettingsControler.GRID_ELEMENTS; i++)
             {
                 if (p.X < ((float)(i + 1) / (float)SettingsControler.GRID_ELEMENTS))
                 {
-                    if (cell != i)
+                    if (position.cell != i)
+                    {
                         positionChanged = true;
+                        posArgs.oldPosition.cell = position.cell;
+                        posArgs.newPosition.cell = i;
+                    }
 
-                    cell = i;
+                    position.cell = i;
                     break;
                 }
             }
@@ -95,23 +122,27 @@ namespace TUI_Web.Data
             {
                 if (p.Y < ((float)(i + 1) / (float)SettingsControler.LINES_DISPLAYED))
                 {
-                    if (row != i)
+                    if (position.row != i)
+                    {
                         positionChanged = true;
+                        posArgs.oldPosition.row = position.row;
+                        posArgs.newPosition.row = i;
+                    }
 
-                    row = i;
+                    position.row = i;
                     break;
                 }
             }
 
             if (positionChanged)
-                EVENT_PositionChanged?.Invoke(this, null);
+                EVENT_PositionChanged?.Invoke(this, posArgs);
         }
 
         public void writeCursorSize(TUIO.TuioObject obj, GridRow row)
         {
             if (obj.AngleDegrees != angle)
             {
-                CursorEventSizeArgs cursorArg = new CursorEventSizeArgs();
+                CursorEventSizeArgs sizeArgs = new CursorEventSizeArgs();
 
                 // the angle of the object was changed 
                 if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
@@ -125,16 +156,24 @@ namespace TUI_Web.Data
 
                         // 2.1. other elements can be decreased
                         int count = 0;
-                        if ((count += row.getDecreasableElementCount(this.)) > 0)
+                        if ((count += row.getDecreasableElementCount(element)) > 0)
                         {
                             
                             // these elememnts must decrease their size
-                            if (element.size + count <= SettingsControler.MAXIMUM_ELEMENT_SIZE)
+                            if (element.size + count <= SettingsControler.MAXIMUM_ELEMENT_SIZE
+                                && element.size + count >= SettingsControler.MINIMUN_ELEMENT_SIZE)
                             {
                                 element.size += count;
 
-                                cursorArg.changeType = SizeChangingType.DecreaseOther;
-                                cursorArg.changeSteps = -1;
+                                sizeArgs.changeType = SizeChangingType.DecreaseOther;
+                                sizeArgs.changeSteps = -1;
+                            }
+                            else
+                            {
+                                element.size += SettingsControler.MINIMUN_ELEMENT_SIZE;
+
+                                sizeArgs.changeType = SizeChangingType.DecreaseOther;
+                                sizeArgs.changeSteps = -2;
                             }
                         }
                         // 2.2. kick out the smallest element
@@ -144,14 +183,14 @@ namespace TUI_Web.Data
                             
                             element.size += SettingsControler.MINIMUN_ELEMENT_SIZE;
 
-                            cursorArg = new CursorEventSizeArgs();
-                            cursorArg.changeType = SizeChangingType.RemoveLast;
-                            cursorArg.changeSteps = SettingsControler.MAXIMUM_ELEMENT_SIZE;
+                            sizeArgs = new CursorEventSizeArgs();
+                            sizeArgs.changeType = SizeChangingType.RemoveLast;
+                            sizeArgs.changeSteps = SettingsControler.MAXIMUM_ELEMENT_SIZE;
                         }
 
 
                         Console.WriteLine("Size++");
-                        EVENT_SizeChanged?.Invoke(this, cursorArg);
+                        EVENT_SizeChanged?.Invoke(this, sizeArgs);
                     }
                     angle = obj.AngleDegrees;
 
@@ -176,12 +215,12 @@ namespace TUI_Web.Data
                             {
                                 element.size -= count;
 
-                                cursorArg = new CursorEventSizeArgs();
-                                cursorArg.changeType = SizeChangingType.IncreaseOther;
-                                cursorArg.changeSteps = 1;
+                                sizeArgs = new CursorEventSizeArgs();
+                                sizeArgs.changeType = SizeChangingType.IncreaseOther;
+                                sizeArgs.changeSteps = 1;
 
                                 System.Console.WriteLine("Size--");
-                                EVENT_SizeChanged?.Invoke(this, cursorArg);
+                                EVENT_SizeChanged?.Invoke(this, sizeArgs);
                             }
                         }
                     }

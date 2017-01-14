@@ -60,12 +60,12 @@ namespace TUI_Web.Data
 
 		private void setOverlayElement(CursorElement cursor)
 		{
-			rows[cursor.getRow()].elements[cursor.getCell()].overlayElement = cursor.getElement();
+			rows[cursor.getRow()].elements[cursor.getCell()].setElement(cursor.getElement());
 		}
 
 		private void removeOverlayElement(CursorElement cursor)
 		{
-			rows[cursor.getRow()].elements[cursor.getCell()].overlayElement = null;
+			rows[cursor.getRow()].elements[cursor.getCell()].setElement(null);
 		}
 
         private void setRealElement(CursorElement cursor)
@@ -102,10 +102,10 @@ namespace TUI_Web.Data
                 {
                     GridElement currentElement = rows[i].elements[j];
 
-                    if (currentElement.overlayElement != null)
+                    if (currentElement.getElement() != null)
                     {
-                        currentElement = currentElement.overlayElement;
-                        currentElement.overlayElement = null;
+                        currentElement = currentElement.getElement();
+                        currentElement.setElement(null);
                     }
                 }
             }
@@ -135,8 +135,8 @@ namespace TUI_Web.Data
                 int counter = 0;
                 foreach (GridElement element in rows[cursor.getRow()].elements)
                 {
-                    if (element.overlayElement != null)
-                        Console.Write("[" + counter + "]:" + element.overlayElement.size + " \r\n");
+                    if (element.getElement() != null)
+                        Console.Write("[" + counter + "]:" + element.getElement().size + " \r\n");
                     else
                         Console.Write("[" + counter + "]:" + element.size + " \r\n");
 
@@ -157,30 +157,45 @@ namespace TUI_Web.Data
         {
             CursorElement cursor = (CursorElement)sender;
             GridRow affectedRow = rows[cursor.getRow()];
+            affectedRow.increaseSizeAffected();
 
             if ((cursorArgs.changeType == SizeChangingType.DecreaseOther) ||
                 (cursorArgs.changeType == SizeChangingType.IncreaseOther))
             {
+                int counter = 0;
+                foreach (GridElement element in rows[cursor.getRow()].elements)
+                {
+                    if (element == affectedRow.elements[cursor.getCell()])
+                        continue;
+
+                    reCalculateSize(element.getElement(), cursorArgs.changeSteps);
+                    counter++;
+
+                    if (counter == affectedRow.elementCount)
+                        break;
+                }
+                /*
                 for (int i = 0; i < affectedRow.elementCount; i++)
                 {
                     GridElement element = affectedRow.elements[i];
                     if (element == affectedRow.elements[cursor.getCell()])
                         continue;
 
-                    reCalculateSize(element, cursorArgs.changeSteps);
+                    reCalculateSize(element.getElement(), cursorArgs.changeSteps);
                 }
+                */
             }
             else if (cursorArgs.changeType == SizeChangingType.RemoveLast)
             {
                 GridElement element = rows[cursor.getRow()].getSmallestElement();
-                if (element.overlayElement != null)
-                    element.overlayElement.size = 0;
+                if (element.getElement() != null)
+                    element.getElement().size = 0;
                 else
                 {
                     GridElement overlay = new GridElement();
                     overlay.size = 0;
                     overlay.type = element.type;
-                    element.overlayElement = overlay;
+                    element = overlay;
                 }
 
                 rows[cursor.getRow()].elementCount--;
@@ -188,31 +203,40 @@ namespace TUI_Web.Data
         }
 
 
-        private void Cursor_EVENT_PositionChanged(object sender, EventArgs e)
+        private void Cursor_EVENT_PositionChanged(object sender, CursorEventPositionArgs posArgs)
         {
-            // TODO
-
             CursorElement cursor = (CursorElement)sender;
-            GridElement affectedElement = rows[cursor.getRow()].elements[cursor.getCell()];
+            OverlayElement affectedElement = rows[cursor.getRow()].elements[cursor.getCell()].getElement();
 
-            if (affectedElement.overlayElement != null)
-                cursor.getElement().size = affectedElement.overlayElement.size;
+            OverlayElement oldElement = null;
+            if (posArgs.oldPosition.cell >= 0 && posArgs.oldPosition.row >= 0)
+                oldElement = rows[posArgs.oldPosition.row].elements[posArgs.oldPosition.cell].getElement();
+
+            if (affectedElement != null)
+                cursor.getElement().size = affectedElement.size;
+            else
+                cursor.getElement().size = SettingsControler.DEFAULT_ELEMENT_SIZE;
+
+            // should be the same ... the old element what was moved is now at the new position
+            if (oldElement == cursor.getElement())
+            {
+                OverlayElement newElement = new OverlayElement();
+                newElement.size = oldElement.size;
+                rows[posArgs.oldPosition.row].elements[posArgs.oldPosition.cell].setElement(newElement);
+            }
 
             affectedElement = cursor.getElement();
         }
 
-        private bool reCalculateSize(GridElement element, int sizeChanged)
+        private bool reCalculateSize(OverlayElement element, int sizeChanged)
         {
-            if (element.overlayElement == null)
-            {
-                element.overlayElement = new GridElement();
-                element.overlayElement.type = element.type;
-            }
+            int newSize = element.size + sizeChanged;
+            if (element.size != 0 &&
+                newSize >= SettingsControler.MINIMUN_ELEMENT_SIZE &&
+                newSize <= SettingsControler.MAXIMUM_ELEMENT_SIZE)
+                element.size += sizeChanged;
 
-            if (element.overlayElement.size != 0)
-                element.overlayElement.size = element.overlayElement.size + sizeChanged;
-
-            if (element.overlayElement.size == 0)
+            if (element.size == 0)
                 return true;
 
             return false;
@@ -242,11 +266,11 @@ namespace TUI_Web.Data
 			try
 			{
 				CursorElement cursor = createNewElement(obj);
-                GridElement existingOverlayElement = null;
+                OverlayElement existingOverlayElement = null;
 
                 cursor.writeCursorPosition(obj);
 				cursor.getElement().type = getType(obj);
-                existingOverlayElement = rows[cursor.getRow()].elements[cursor.getCell()].overlayElement;
+                existingOverlayElement = rows[cursor.getRow()].elements[cursor.getCell()].getElement();
 
                 if (existingOverlayElement != null)
                     cursor.getElement().size = existingOverlayElement.size;

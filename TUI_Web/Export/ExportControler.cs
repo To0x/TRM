@@ -105,8 +105,8 @@ namespace TUI_Web.Export
             GridElement workingElement = null;
 
             // Falls aktuell ein Element auf der Oberfläche liegt wird das gesicherte Element überdeckt
-            if (element.overlayElement != null)
-                workingElement = element.overlayElement;
+            if (element.getElement() != null)
+                workingElement = element.getElement();
             else
                 workingElement = element;
 
