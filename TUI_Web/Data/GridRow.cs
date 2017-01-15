@@ -32,6 +32,17 @@ public class GridRow : IEnumerable<GridRow>
 		}
     }
 
+	// check if there is already a element
+	// true: there is another element on the same grid-cell
+	// false: there isnt.
+	public bool elementExists(TUI_Web.Data.CursorElement cursor)
+	{
+		if (elements[cursor.getCell()].getElement().type !=  ElementTypes.None)
+			return true;
+		else
+			return false;
+	}
+
     public int getDecreasableElementCount(GridElement sender)
     {
         int count = 0;
@@ -88,6 +99,15 @@ public class GridRow : IEnumerable<GridRow>
         else
             affectRow(false);
     }
+
+	public void decreaseSizeAffected()
+	{
+		affectedCount--;
+		if (affectedCount > 0)
+			affectRow(true);
+		else
+			affectRow(false);
+	}
 
     public int getIncreasableElementCount(GridElement sender)
     {

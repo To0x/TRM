@@ -31,12 +31,13 @@ namespace TUI_Web.Data
 
     // this class is only for this Controler, to save the position of the elements
     // to reset cursors and smth. else for existing objects
-    class CursorElement
+    public class CursorElement
     {
         public event EventHandler<CursorEventSizeArgs> EVENT_SizeChanged;
         public event EventHandler<CursorEventPositionArgs> EVENT_PositionChanged;
 
         private OverlayElement element;
+		public bool affected;
 
         private GridPosition position;
         //private int row;
@@ -102,6 +103,10 @@ namespace TUI_Web.Data
             TUIO.TuioPoint p = obj.Position;
             bool positionChanged = false;
             CursorEventPositionArgs posArgs = new CursorEventPositionArgs();
+			posArgs.oldPosition.row = this.getRow();
+			posArgs.oldPosition.cell = this.getCell();
+
+
             for (int i = 0; i <= SettingsControler.GRID_ELEMENTS; i++)
             {
                 if (p.X < ((float)(i + 1) / (float)SettingsControler.GRID_ELEMENTS))
@@ -110,7 +115,6 @@ namespace TUI_Web.Data
                     {
                         positionChanged = true;
                         posArgs.oldPosition.cell = position.cell;
-                        posArgs.newPosition.cell = i;
                     }
 
                     position.cell = i;
@@ -126,7 +130,6 @@ namespace TUI_Web.Data
                     {
                         positionChanged = true;
                         posArgs.oldPosition.row = position.row;
-                        posArgs.newPosition.row = i;
                     }
 
                     position.row = i;
@@ -134,8 +137,11 @@ namespace TUI_Web.Data
                 }
             }
 
-            if (positionChanged)
-                EVENT_PositionChanged?.Invoke(this, posArgs);
+			if (positionChanged)
+			{
+				posArgs.newPosition = this.position;
+				EVENT_PositionChanged?.Invoke(this, posArgs);
+			}
         }
 
         public void writeCursorSize(TUIO.TuioObject obj, GridRow row)

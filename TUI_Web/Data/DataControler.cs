@@ -124,6 +124,12 @@ namespace TUI_Web.Data
                 // calculate cursor Position
                 cursor.writeCursorPosition(obj);
 
+				// if there is already a element -> stop
+				//if (rows[cursor.getRow()].elementExists(cursor))
+				//{
+				//	return;
+				//}
+
                 // write new size of the cursor-element, may it has been changed
                 cursor.writeCursorSize(obj, rows[cursor.getRow()]);
 
@@ -136,9 +142,11 @@ namespace TUI_Web.Data
                 foreach (GridElement element in rows[cursor.getRow()].elements)
                 {
                     if (element.getElement() != null)
-                        Console.Write("[" + counter + "]:" + element.getElement().size + " \r\n");
+						Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.getElement().size + " \r\n");
                     else
-                        Console.Write("[" + counter + "]:" + element.size + " \r\n");
+						Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.size + " \r\n");
+
+					
 
                     counter++;
                 }
@@ -157,7 +165,25 @@ namespace TUI_Web.Data
         {
             CursorElement cursor = (CursorElement)sender;
             GridRow affectedRow = rows[cursor.getRow()];
-            affectedRow.increaseSizeAffected();
+
+			if (!cursor.affected)
+			{
+				affectedRow.increaseSizeAffected();
+				cursor.affected = false;
+			}
+
+			//if (cursor.getElement().size != SettingsControler.DEFAULT_ELEMENT_SIZE)
+			//{
+			//	if (posArgs.oldPosition.row != posArgs.newPosition.row)
+			//	{
+			//		rows[posArgs.oldPosition.row].decreaseSizeAffected();
+			//	}
+			//}
+
+
+
+			// only once per element
+			// affectedRow.increaseSizeAffected();
 
             if ((cursorArgs.changeType == SizeChangingType.DecreaseOther) ||
                 (cursorArgs.changeType == SizeChangingType.IncreaseOther))
@@ -174,16 +200,6 @@ namespace TUI_Web.Data
                     if (counter == affectedRow.elementCount)
                         break;
                 }
-                /*
-                for (int i = 0; i < affectedRow.elementCount; i++)
-                {
-                    GridElement element = affectedRow.elements[i];
-                    if (element == affectedRow.elements[cursor.getCell()])
-                        continue;
-
-                    reCalculateSize(element.getElement(), cursorArgs.changeSteps);
-                }
-                */
             }
             else if (cursorArgs.changeType == SizeChangingType.RemoveLast)
             {
@@ -208,22 +224,45 @@ namespace TUI_Web.Data
             CursorElement cursor = (CursorElement)sender;
             OverlayElement affectedElement = rows[cursor.getRow()].elements[cursor.getCell()].getElement();
 
-            OverlayElement oldElement = null;
-            if (posArgs.oldPosition.cell >= 0 && posArgs.oldPosition.row >= 0)
-                oldElement = rows[posArgs.oldPosition.row].elements[posArgs.oldPosition.cell].getElement();
 
-            if (affectedElement != null)
-                cursor.getElement().size = affectedElement.size;
+			if (cursor.getElement().size != SettingsControler.DEFAULT_ELEMENT_SIZE)
+			{
+				if (cursor.affected && posArgs.oldPosition.row != posArgs.newPosition.row)
+				{
+					rows[posArgs.oldPosition.row].decreaseSizeAffected();
+					cursor.affected = false;
+				}
+			}
+
+
+			// old element have to save their size, before the cursor is moved!
+            OverlayElement oldElement = null;
+			if (posArgs.oldPosition.cell >= 0 && posArgs.oldPosition.row >= 0)
+			{
+				oldElement = new OverlayElement();
+				oldElement.size = cursor.getElement().size;
+				rows[posArgs.oldPosition.row].elements[posArgs.oldPosition.cell].setElement(oldElement);
+			}
+
+			// if on the new element a size-manipulation happenened, we need to save this to the cursor
+			if (affectedElement != null)
+			{
+				// there could only be one element at the same time.
+				if (affectedElement.type == ElementTypes.None)
+				{
+					cursor.getElement().size = affectedElement.size;
+				}
+			}
             else
                 cursor.getElement().size = SettingsControler.DEFAULT_ELEMENT_SIZE;
 
             // should be the same ... the old element what was moved is now at the new position
-            if (oldElement == cursor.getElement())
+            /*if (oldElement == cursor.getElement())
             {
                 OverlayElement newElement = new OverlayElement();
                 newElement.size = oldElement.size;
                 rows[posArgs.oldPosition.row].elements[posArgs.oldPosition.cell].setElement(newElement);
-            }
+            }*/
 
             affectedElement = cursor.getElement();
         }
@@ -270,6 +309,7 @@ namespace TUI_Web.Data
 
                 cursor.writeCursorPosition(obj);
 				cursor.getElement().type = getType(obj);
+
                 existingOverlayElement = rows[cursor.getRow()].elements[cursor.getCell()].getElement();
 
                 if (existingOverlayElement != null)
