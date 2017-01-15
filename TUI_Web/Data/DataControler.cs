@@ -142,14 +142,22 @@ namespace TUI_Web.Data
                 foreach (GridElement element in rows[cursor.getRow()].elements)
                 {
                     if (element.getElement() != null)
-						Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.getElement().size + " \r\n");
+						Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.getElement().size + "\r\n ");
                     else
-						Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.size + " \r\n");
+						Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.size + "\r\n ");
 
 					
 
                     counter++;
                 }
+
+				int i = 0;
+				foreach (GridRow row in rows)
+				{
+					Console.WriteLine("R[" + i + "] aff:" + row.getAffectedCount());
+					i++;
+				}
+
                 EVENT_dataUpdated?.Invoke(this, rows);
 			}
 			catch (Exception)
@@ -166,24 +174,31 @@ namespace TUI_Web.Data
             CursorElement cursor = (CursorElement)sender;
             GridRow affectedRow = rows[cursor.getRow()];
 
+			// say the row, that there is a size-manipulation!
+			// only once per cursor.element
 			if (!cursor.affected)
 			{
 				affectedRow.increaseSizeAffected();
-				cursor.affected = false;
+				cursor.affected = true;
+
+				if (affectedRow.getAffected())
+				{
+					foreach (KeyValuePair<int, CursorElement> myCursors in cursorElements)
+					{
+						if (myCursors.Value == cursor)
+							continue;
+
+						if (myCursors.Value.getRow() == cursor.getRow())
+						{
+							if (!myCursors.Value.affected)
+							{
+								myCursors.Value.affected = true;
+								affectedRow.increaseSizeAffected();
+							}
+						}
+					}
+				}
 			}
-
-			//if (cursor.getElement().size != SettingsControler.DEFAULT_ELEMENT_SIZE)
-			//{
-			//	if (posArgs.oldPosition.row != posArgs.newPosition.row)
-			//	{
-			//		rows[posArgs.oldPosition.row].decreaseSizeAffected();
-			//	}
-			//}
-
-
-
-			// only once per element
-			// affectedRow.increaseSizeAffected();
 
             if ((cursorArgs.changeType == SizeChangingType.DecreaseOther) ||
                 (cursorArgs.changeType == SizeChangingType.IncreaseOther))
@@ -225,26 +240,58 @@ namespace TUI_Web.Data
             OverlayElement affectedElement = rows[cursor.getRow()].elements[cursor.getCell()].getElement();
 
 
-			if (cursor.getElement().size != SettingsControler.DEFAULT_ELEMENT_SIZE)
+			// if the element was moved from a affected row
+			// tell the row, that there is an element less
+			// if there are no affected elements on the row, it will reset itself
+			if ((affectedElement != null && affectedElement.size != SettingsControler.DEFAULT_ELEMENT_SIZE) ||
+			   (cursor.getElement().size != SettingsControler.DEFAULT_ELEMENT_SIZE))
 			{
-				if (cursor.affected && posArgs.oldPosition.row != posArgs.newPosition.row)
+				if (cursor.affected)
 				{
-					rows[posArgs.oldPosition.row].decreaseSizeAffected();
-					cursor.affected = false;
+					if (posArgs.oldPosition.row != posArgs.newPosition.row)
+					{
+						rows[posArgs.oldPosition.row].decreaseSizeAffected();
+						if (rows[posArgs.newPosition.row].getAffected())
+						{
+							rows[posArgs.newPosition.row].increaseSizeAffected();
+						}
+						else
+						{
+							cursor.affected = false;
+						}
+					}
+				}
+				else
+				{
+					if (rows[posArgs.newPosition.row].getAffected())
+					{
+						rows[posArgs.newPosition.row].increaseSizeAffected();
+						cursor.affected = true;
+					}
 				}
 			}
 
 
-			// old element have to save their size, before the cursor is moved!
+			// old cursor-element have to save their size, before the cursor is moved!
             OverlayElement oldElement = null;
 			if (posArgs.oldPosition.cell >= 0 && posArgs.oldPosition.row >= 0)
 			{
-				oldElement = new OverlayElement();
-				oldElement.size = cursor.getElement().size;
-				rows[posArgs.oldPosition.row].elements[posArgs.oldPosition.cell].setElement(oldElement);
+				if (rows[posArgs.oldPosition.row].getAffected())
+				{
+					oldElement = new OverlayElement();
+					oldElement.size = cursor.getElement().size;
+					oldElement.type = ElementTypes.None;
+					oldElement.cursor = false;
+					rows[posArgs.oldPosition.row].elements[posArgs.oldPosition.cell].setElement(oldElement);
+				}
+				else
+				{
+					rows[posArgs.oldPosition.row].elements[posArgs.oldPosition.cell].setElement(null);
+				}
+					
 			}
 
-			// if on the new element a size-manipulation happenened, we need to save this to the cursor
+			// if on the new element a size-manipulation already happenened, we need to adopt it
 			if (affectedElement != null)
 			{
 				// there could only be one element at the same time.
@@ -256,17 +303,14 @@ namespace TUI_Web.Data
             else
                 cursor.getElement().size = SettingsControler.DEFAULT_ELEMENT_SIZE;
 
-            // should be the same ... the old element what was moved is now at the new position
-            /*if (oldElement == cursor.getElement())
-            {
-                OverlayElement newElement = new OverlayElement();
-                newElement.size = oldElement.size;
-                rows[posArgs.oldPosition.row].elements[posArgs.oldPosition.cell].setElement(newElement);
-            }*/
-
             affectedElement = cursor.getElement();
         }
 
+		// calculates the new size of the given element 
+		// the calculation only will be provided if:
+		// -> the current size is not 0 -> this elements will not be in-, decreased anymore!
+		// -> the new size will not overstep the max. size
+		// -> the new size will not fall below to the min. size
         private bool reCalculateSize(OverlayElement element, int sizeChanged)
         {
             int newSize = element.size + sizeChanged;
@@ -305,15 +349,9 @@ namespace TUI_Web.Data
 			try
 			{
 				CursorElement cursor = createNewElement(obj);
-                OverlayElement existingOverlayElement = null;
 
                 cursor.writeCursorPosition(obj);
 				cursor.getElement().type = getType(obj);
-
-                existingOverlayElement = rows[cursor.getRow()].elements[cursor.getCell()].getElement();
-
-                if (existingOverlayElement != null)
-                    cursor.getElement().size = existingOverlayElement.size;
 
 				setOverlayElement(cursor);
 

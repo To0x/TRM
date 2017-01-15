@@ -28,9 +28,9 @@ namespace TUI_Web.Settings
         // each element could not be bigger than the following size
         public const int MAXIMUM_ELEMENT_SIZE = BOOTSTRAP_SIZE;
 
-        // should be false
-        // only enable if you want to see all grids at the same time
-        public static bool DEFAULT_CURSOR_STATE = true;
+		// should be false
+		// only enable if you want to see all grids at the same time
+		public static bool DEFAULT_CURSOR_STATE = false;
 
         // how much degrees have the angle to be changed, before the size will also be changed.
         // for example: 360° includes 10 steps for size-changing. Each 36° degrees, the size will be changed

@@ -49,13 +49,31 @@ public class GridRow : IEnumerable<GridRow>
         foreach (GridElement element in elements)
         {
             GridElement checkElement = null;
+			if (affected)
+			{
+				checkElement = element.getElement();
+				if (checkElement != null && checkElement == sender)
+					continue;
+			}
+			else
+			{
+				checkElement = element;
+				if (checkElement.getElement() != null && checkElement.getElement() == sender)
+					continue;
+			}
+
+			/*
             if (element.getElement() != null)
                 checkElement = element.getElement();
             else
                 checkElement = element;
+                */
 
-            if (checkElement == sender)
-                continue;
+
+
+			//if ((checkElement.getElement() != null) && 
+			//    (checkElement.getElement() == sender))
+            //    continue;
 
             if (checkElement.size > SettingsControler.MINIMUN_ELEMENT_SIZE)
                 count++;
@@ -64,26 +82,42 @@ public class GridRow : IEnumerable<GridRow>
         return count;
     }
 
-    private void affectRow(bool affected)
+	public bool getAffected()
+	{
+		return this.affected;
+	}
+
+
+	// TODO delete -> affected is only for GridRow visible!!
+	public int getAffectedCount()
+	{
+		return affectedCount;
+	}
+
+    private void affectRow(bool setAffected)
     {
-        if (affected)
+        if (setAffected)
         {
-            this.affected = true;
+            affected = true;
             foreach (GridElement element in elements)
             {
-                // if there is already a element, we do not need to create new one
-                if (element.getElement() == null)
-                {
-                    element.setElement(new OverlayElement());
-                    element.getElement().type = element.type;
-                    element.getElement().size = element.size;
-                    element.getElement().cursor = element.cursor;
-                }
+				// if there is already a element, we do not need to create new one
+				if (element.getElement() == null)
+				{
+					element.setElement(new OverlayElement());
+					element.getElement().type = element.type;
+					element.getElement().size = element.size;
+					element.getElement().cursor = element.cursor;
+				}
+				else
+				{
+					
+				}
             }
         }
         else
         {
-            this.affected = false;
+            affected = false;
             foreach (GridElement element in elements)
             {
                 element.setElement(null);
@@ -115,10 +149,17 @@ public class GridRow : IEnumerable<GridRow>
         foreach (GridElement element in elements)
         {
             GridElement checkElement = null;
+			if (affected)
+				checkElement = element.getElement();
+			else
+				checkElement = element;
+
+			/*
             if (element.getElement() != null)
                 checkElement = element.getElement();
             else
                 checkElement = element;
+                */
 
             if (checkElement == sender)
                 continue;
@@ -137,10 +178,18 @@ public class GridRow : IEnumerable<GridRow>
         foreach (GridElement element in elements)
         {
             GridElement checkElement = null;
+
+			if (affected)
+				checkElement = element.getElement();
+			else
+				checkElement = element;
+
+			/*
             if (element.getElement() != null)
                 checkElement = element.getElement();
             else
                 checkElement = element;
+            */
 
 
             if (checkElement.size != 0 && checkElement.size < smallest)
@@ -170,17 +219,23 @@ public class GridRow : IEnumerable<GridRow>
 
         foreach (GridElement element in elements)
         {
+			if (affected)
+				checkElement = element.getElement();
+			else
+				checkElement = element;
+
+			/*
             if (element.getElement() != null)
                 checkElement = element.getElement();
             else
                 checkElement = element;
+                */
 
 
             if (checkElement.size != 0 && checkElement.size <= smallest)
             {
                 smallestElement = element;
-                smallest = checkElement.size;
-
+				smallest = checkElement.size;
             }
         }
         return smallestElement;
