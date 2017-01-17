@@ -13,7 +13,7 @@ public class OverlayElement : GridElement
     
     public OverlayElement()
     {
-        base.setElement(null);
+        base.setOverlay(null);
     }
 }
 
@@ -55,12 +55,12 @@ public class GridElement
 		cursor = true;
 	}
 
-    public void setElement(OverlayElement element)
+    public void setOverlay(OverlayElement element)
     {
         overlayElement = element;
     }
 
-    public OverlayElement getElement()
+    public OverlayElement getOverlay()
     {
         return overlayElement;
     }

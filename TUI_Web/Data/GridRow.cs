@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ public class GridRow : IEnumerable<GridRow>
 	// false: there isnt.
 	public bool elementExists(TUI_Web.Data.CursorElement cursor)
 	{
-		if (elements[cursor.getCell()].getElement().type !=  ElementTypes.None)
+		if (elements[cursor.getCell()].getOverlay().type !=  ElementTypes.None)
 			return true;
 		else
 			return false;
@@ -51,14 +51,14 @@ public class GridRow : IEnumerable<GridRow>
             GridElement checkElement = null;
 			if (affected)
 			{
-				checkElement = element.getElement();
+				checkElement = element.getOverlay();
 				if (checkElement != null && checkElement == sender)
 					continue;
 			}
 			else
 			{
 				checkElement = element;
-				if (checkElement.getElement() != null && checkElement.getElement() == sender)
+				if (checkElement.getOverlay() != null && checkElement.getOverlay() == sender)
 					continue;
 			}
 
@@ -102,12 +102,12 @@ public class GridRow : IEnumerable<GridRow>
             foreach (GridElement element in elements)
             {
 				// if there is already a element, we do not need to create new one
-				if (element.getElement() == null)
+				if (element.getOverlay() == null)
 				{
-					element.setElement(new OverlayElement());
-					element.getElement().type = element.type;
-					element.getElement().size = element.size;
-					element.getElement().cursor = element.cursor;
+					element.setOverlay(new OverlayElement());
+					element.getOverlay().type = element.type;
+					element.getOverlay().size = element.size;
+					element.getOverlay().cursor = element.cursor;
 				}
 				else
 				{
@@ -120,7 +120,7 @@ public class GridRow : IEnumerable<GridRow>
             affected = false;
             foreach (GridElement element in elements)
             {
-                element.setElement(null);
+                element.setOverlay(null);
             }
         }
     }
@@ -150,7 +150,7 @@ public class GridRow : IEnumerable<GridRow>
         {
             GridElement checkElement = null;
 			if (affected)
-				checkElement = element.getElement();
+				checkElement = element.getOverlay();
 			else
 				checkElement = element;
 
@@ -180,7 +180,7 @@ public class GridRow : IEnumerable<GridRow>
             GridElement checkElement = null;
 
 			if (affected)
-				checkElement = element.getElement();
+				checkElement = element.getOverlay();
 			else
 				checkElement = element;
 
@@ -204,8 +204,8 @@ public class GridRow : IEnumerable<GridRow>
         int biggest = SettingsControler.MINIMUN_ELEMENT_SIZE;
         foreach (GridElement element in elements)
         {
-            if (element.getElement().size != SettingsControler.MAXIMUM_ELEMENT_SIZE && element.size > biggest)
-                biggest = element.getElement().size;
+            if (element.getOverlay().size != SettingsControler.MAXIMUM_ELEMENT_SIZE && element.size > biggest)
+                biggest = element.getOverlay().size;
         }
 
         return biggest;
@@ -220,7 +220,7 @@ public class GridRow : IEnumerable<GridRow>
         foreach (GridElement element in elements)
         {
 			if (affected)
-				checkElement = element.getElement();
+				checkElement = element.getOverlay();
 			else
 				checkElement = element;
 

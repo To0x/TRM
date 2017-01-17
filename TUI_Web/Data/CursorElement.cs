@@ -1,5 +1,6 @@
 ﻿using System;
 using TUI_Web.Settings;
+using System.Collections.Generic;
 
 namespace TUI_Web.Data
 {
@@ -52,7 +53,7 @@ namespace TUI_Web.Data
             element.setCursor();
             position.row = -1;
             position.cell = -1;
-            angle = 0;
+			angle = .0f;
         }
 
         #region getterSetter
@@ -93,7 +94,7 @@ namespace TUI_Web.Data
         }
         #endregion
 
-        public void writeCursorPosition(TUIO.TuioObject obj)
+        public void writeCursorPosition(TUIO.TuioObject obj, List<GridRow> rows)
         {
             // Position des Elementes anhand der Gesamtanzahl der Elemente berechnen
             // z.B Pro Zeile 3 Elemente:
@@ -106,10 +107,26 @@ namespace TUI_Web.Data
 			posArgs.oldPosition.row = this.getRow();
 			posArgs.oldPosition.cell = this.getCell();
 
+			for (int i = 0; i <= SettingsControler.LINES_DISPLAYED; i++)
+			{
+				if (p.Y < ((float)(i + 1) / (float)SettingsControler.LINES_DISPLAYED))
+				{
+					if (position.row != i)
+					{
+						positionChanged = true;
+						posArgs.oldPosition.row = position.row;
+					}
 
-            for (int i = 0; i <= SettingsControler.GRID_ELEMENTS; i++)
+					position.row = i;
+					break;
+				}
+			}
+
+			for (int i = 0; i <= rows[position.row].elementCount; i++)
+            //for (int i = 0; i <= SettingsControler.GRID_ELEMENTS; i++)
             {
-                if (p.X < ((float)(i + 1) / (float)SettingsControler.GRID_ELEMENTS))
+				if (p.X < ((float)(i + 1) / (float)rows[position.row].elementCount)) 
+                //if (p.X < ((float)(i + 1) / (float)SettingsControler.GRID_ELEMENTS))
                 {
                     if (position.cell != i)
                     {
@@ -118,21 +135,6 @@ namespace TUI_Web.Data
                     }
 
                     position.cell = i;
-                    break;
-                }
-            }
-
-            for (int i = 0; i <= SettingsControler.LINES_DISPLAYED; i++)
-            {
-                if (p.Y < ((float)(i + 1) / (float)SettingsControler.LINES_DISPLAYED))
-                {
-                    if (position.row != i)
-                    {
-                        positionChanged = true;
-                        posArgs.oldPosition.row = position.row;
-                    }
-
-                    position.row = i;
                     break;
                 }
             }
@@ -146,7 +148,7 @@ namespace TUI_Web.Data
 
         public void writeCursorSize(TUIO.TuioObject obj, GridRow row)
         {
-            if (obj.AngleDegrees != angle)
+			if ((int)(obj.AngleDegrees) != (int)(angle))
             {
                 CursorEventSizeArgs sizeArgs = new CursorEventSizeArgs();
 

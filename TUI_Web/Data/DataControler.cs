@@ -60,17 +60,17 @@ namespace TUI_Web.Data
 
 		private void setOverlayElement(CursorElement cursor)
 		{
-			rows[cursor.getRow()].elements[cursor.getCell()].setElement(cursor.getElement());
+			getElement(cursor.getRow(), cursor.getCell()).setOverlay(cursor.getElement());
 		}
 
 		private void removeOverlayElement(CursorElement cursor)
 		{
-			rows[cursor.getRow()].elements[cursor.getCell()].setElement(null);
+			getElement(cursor.getRow(), cursor.getCell()).setOverlay(null);
 		}
 
         private void setRealElement(CursorElement cursor)
         {
-            rows[cursor.getRow()].elements[cursor.getCell()] = cursor.getElement();
+			rows[cursor.getRow()].elements[cursor.getCell()] = cursor.getElement();
         }
 
 		private ElementTypes getType(TUIO.TuioObject obj)
@@ -102,10 +102,10 @@ namespace TUI_Web.Data
                 {
                     GridElement currentElement = rows[i].elements[j];
 
-                    if (currentElement.getElement() != null)
+                    if (currentElement.getOverlay() != null)
                     {
-                        currentElement = currentElement.getElement();
-                        currentElement.setElement(null);
+                        currentElement = currentElement.getOverlay();
+                        currentElement.setOverlay(null);
                     }
                 }
             }
@@ -122,7 +122,7 @@ namespace TUI_Web.Data
                 // TODO: StartTransaction -> if error, reset states
 
                 // calculate cursor Position
-                cursor.writeCursorPosition(obj);
+				cursor.writeCursorPosition(obj, rows);
 
 				// if there is already a element -> stop
 				//if (rows[cursor.getRow()].elementExists(cursor))
@@ -141,8 +141,8 @@ namespace TUI_Web.Data
                 int counter = 0;
                 foreach (GridElement element in rows[cursor.getRow()].elements)
                 {
-                    if (element.getElement() != null)
-						Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.getElement().size + "\r\n ");
+                    if (element.getOverlay() != null)
+						Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.getOverlay().size + "\r\n ");
                     else
 						Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.size + "\r\n ");
 
@@ -209,7 +209,7 @@ namespace TUI_Web.Data
                     if (element == affectedRow.elements[cursor.getCell()])
                         continue;
 
-                    reCalculateSize(element.getElement(), cursorArgs.changeSteps);
+                    reCalculateSize(element.getOverlay(), cursorArgs.changeSteps);
                     counter++;
 
                     if (counter == affectedRow.elementCount)
@@ -219,8 +219,8 @@ namespace TUI_Web.Data
             else if (cursorArgs.changeType == SizeChangingType.RemoveLast)
             {
                 GridElement element = rows[cursor.getRow()].getSmallestElement();
-                if (element.getElement() != null)
-                    element.getElement().size = 0;
+                if (element.getOverlay() != null)
+                    element.getOverlay().size = 0;
                 else
                 {
                     GridElement overlay = new GridElement();
@@ -237,7 +237,7 @@ namespace TUI_Web.Data
         private void Cursor_EVENT_PositionChanged(object sender, CursorEventPositionArgs posArgs)
         {
             CursorElement cursor = (CursorElement)sender;
-            OverlayElement affectedElement = rows[cursor.getRow()].elements[cursor.getCell()].getElement();
+			OverlayElement affectedElement = getElement(cursor.getRow(), cursor.getCell()).getOverlay();
 
 
 			// if the element was moved from a affected row
@@ -282,11 +282,11 @@ namespace TUI_Web.Data
 					oldElement.size = cursor.getElement().size;
 					oldElement.type = ElementTypes.None;
 					oldElement.cursor = false;
-					rows[posArgs.oldPosition.row].elements[posArgs.oldPosition.cell].setElement(oldElement);
+					getElement(posArgs.oldPosition.row, posArgs.oldPosition.cell).setOverlay(oldElement);
 				}
 				else
 				{
-					rows[posArgs.oldPosition.row].elements[posArgs.oldPosition.cell].setElement(null);
+					getElement(posArgs.oldPosition.row, posArgs.oldPosition.cell).setOverlay(null);
 				}
 					
 			}
@@ -350,7 +350,7 @@ namespace TUI_Web.Data
 			{
 				CursorElement cursor = createNewElement(obj);
 
-                cursor.writeCursorPosition(obj);
+                cursor.writeCursorPosition(obj, rows);
 				cursor.getElement().type = getType(obj);
 
 				setOverlayElement(cursor);

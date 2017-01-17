@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -105,8 +105,8 @@ namespace TUI_Web.Export
             GridElement workingElement = null;
 
             // Falls aktuell ein Element auf der Oberfläche liegt wird das gesicherte Element überdeckt
-            if (element.getElement() != null)
-                workingElement = element.getElement();
+            if (element.getOverlay() != null)
+                workingElement = element.getOverlay();
             else
                 workingElement = element;
 
