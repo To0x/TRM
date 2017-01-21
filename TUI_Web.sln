@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TUI_Web", "TUI_Web\TUI_Web.csproj", "{63652022-3A65-4F35-A338-878A68CBBC1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TUIO_LIB", "..\TUIO11_NET\TUIO_LIB.csproj", "{3CBF7D4A-CE06-490D-80DA-580D02C268DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TUIO_LIB", "..\TUIO11_NET-1.1.5\TUIO11_NET\TUIO_LIB.csproj", "{3CBF7D4A-CE06-490D-80DA-580D02C268DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -32,6 +32,13 @@ namespace TUI_Web.Settings
 		// only enable if you want to see all grids at the same time
 		public static bool DEFAULT_CURSOR_STATE = false;
 
+        // how long we have to wait, until the object can rly be removed!
+        // problem is, that the camera (or the reactivision-software) triggers remove & new even if the element is not moved!
+        public static int REMOVE_WAITTIME = 1000;
+
+        // is the cmaera pic inverted? 
+        public static bool INVERTED = true;
+
         // how much degrees have the angle to be changed, before the size will also be changed.
         // for example: 360° includes 10 steps for size-changing. Each 36° degrees, the size will be changed
         public static float sizeStep()

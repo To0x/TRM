@@ -107,26 +107,46 @@ namespace TUI_Web.Data
 			posArgs.oldPosition.row = this.getRow();
 			posArgs.oldPosition.cell = this.getCell();
 
-			for (int i = 0; i <= SettingsControler.LINES_DISPLAYED; i++)
-			{
-				if (p.Y < ((float)(i + 1) / (float)SettingsControler.LINES_DISPLAYED))
-				{
-					if (position.row != i)
-					{
-						positionChanged = true;
-						posArgs.oldPosition.row = position.row;
-					}
 
-					position.row = i;
-					break;
-				}
-			}
+            if (SettingsControler.INVERTED)
+            {
+                for (int i = 1; i <= (SettingsControler.LINES_DISPLAYED + 1); i++)
+                {
+                    if (p.Y < ((float)(i) / (float)SettingsControler.LINES_DISPLAYED))
+                    {
+                        if (position.row != (SettingsControler.LINES_DISPLAYED - (i)))
+                        {
+                            positionChanged = true;
+                            posArgs.oldPosition.row = position.row;
+                        }
+
+                        position.row = SettingsControler.LINES_DISPLAYED - (i);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i <= SettingsControler.LINES_DISPLAYED; i++)
+                {
+                    if (p.Y < ((float)(i + 1) / (float)SettingsControler.LINES_DISPLAYED))
+                    {
+                        if (position.row != i)
+                        { 
+                            positionChanged = true;
+                            posArgs.oldPosition.row = position.row;
+                        }
+
+                        position.row = i;
+                        break;
+                    }
+
+                }
+            }
 
 			for (int i = 0; i <= rows[position.row].elementCount; i++)
-            //for (int i = 0; i <= SettingsControler.GRID_ELEMENTS; i++)
             {
 				if (p.X < ((float)(i + 1) / (float)rows[position.row].elementCount)) 
-                //if (p.X < ((float)(i + 1) / (float)SettingsControler.GRID_ELEMENTS))
                 {
                     if (position.cell != i)
                     {
