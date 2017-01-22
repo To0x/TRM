@@ -62,19 +62,6 @@ public class GridRow : IEnumerable<GridRow>
 					continue;
 			}
 
-			/*
-            if (element.getElement() != null)
-                checkElement = element.getElement();
-            else
-                checkElement = element;
-                */
-
-
-
-			//if ((checkElement.getElement() != null) && 
-			//    (checkElement.getElement() == sender))
-            //    continue;
-
             if (checkElement.size > SettingsControler.MINIMUN_ELEMENT_SIZE)
                 count++;
         }
@@ -149,20 +136,18 @@ public class GridRow : IEnumerable<GridRow>
         foreach (GridElement element in elements)
         {
             GridElement checkElement = null;
-			if (affected)
-				checkElement = element.getOverlay();
-			else
-				checkElement = element;
-
-			/*
-            if (element.getElement() != null)
-                checkElement = element.getElement();
+            if (affected)
+            {
+                checkElement = element.getOverlay();
+                if (checkElement != null && checkElement == sender)
+                    continue;
+            }
             else
+            {
                 checkElement = element;
-                */
-
-            if (checkElement == sender)
-                continue;
+                if (checkElement.getOverlay() != null && checkElement.getOverlay() == sender)
+                    continue;
+            }
 
             if (checkElement.size != 0 &&
                 checkElement.size < SettingsControler.MAXIMUM_ELEMENT_SIZE)
@@ -183,14 +168,6 @@ public class GridRow : IEnumerable<GridRow>
 				checkElement = element.getOverlay();
 			else
 				checkElement = element;
-
-			/*
-            if (element.getElement() != null)
-                checkElement = element.getElement();
-            else
-                checkElement = element;
-            */
-
 
             if (checkElement.size != 0 && checkElement.size < smallest)
                 smallest = checkElement.size;
@@ -223,14 +200,6 @@ public class GridRow : IEnumerable<GridRow>
 				checkElement = element.getOverlay();
 			else
 				checkElement = element;
-
-			/*
-            if (element.getElement() != null)
-                checkElement = element.getElement();
-            else
-                checkElement = element;
-                */
-
 
             if (checkElement.size != 0 && checkElement.size <= smallest)
             {

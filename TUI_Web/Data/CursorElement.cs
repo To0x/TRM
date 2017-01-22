@@ -63,6 +63,11 @@ namespace TUI_Web.Data
             y = position.cell;
         }
 
+        public GridPosition getPosition()
+        {
+            return position;
+        }
+
         public int getRow()
         {
             return position.row;
@@ -168,6 +173,8 @@ namespace TUI_Web.Data
 
         public void writeCursorSize(TUIO.TuioObject obj, GridRow row)
         {
+            Console.WriteLine("[{0}] angle: " + Math.Round(obj.AngleDegrees,0) + "Saved: " + Math.Round(angle,0), obj.SymbolID);
+
 			if ((int)(obj.AngleDegrees) != (int)(angle))
             {
                 CursorEventSizeArgs sizeArgs = new CursorEventSizeArgs();

@@ -13,6 +13,8 @@ namespace TUI_Web.Data
 		private Dictionary<int, CursorElement> cursorElements;
         private Dictionary<int, myTimer> timer;
 
+        private CursorElement saveCursor = null;
+
         private object lockObject = new object();
         #endregion
 
@@ -59,24 +61,37 @@ namespace TUI_Web.Data
             cursorElements.Clear();
         }
 
+        private void save(CursorElement cursor)
+        {
+            if (getElement(cursor.getPosition().row, cursor.getPosition().cell).getOverlay() != null)
+            {
+                setRealElement(cursor);
+                Console.WriteLine("SAVED: " + cursor.getPosition().row + " ; " + cursor.getPosition().cell);
+            }
+            
+
+            // TODO inform user!
+        }
+
         #region private
         private CursorElement createNewElement(TUIO.TuioObject obj)
 		{
-			CursorElement cursor = new CursorElement();
-            cursor.EVENT_SizeChanged += Cursor_EVENT_SizeChanged;
-            cursor.EVENT_PositionChanged += Cursor_EVENT_PositionChanged;
+            try
+            {
+                CursorElement cursor = new CursorElement();
+                cursor.EVENT_SizeChanged += Cursor_EVENT_SizeChanged;
+                cursor.EVENT_PositionChanged += Cursor_EVENT_PositionChanged;
 
-            cursor.setAngle(obj.AngleDegrees);
-			try
-			{
-				cursorElements.Add(obj.SymbolID, cursor);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("createNewElement: " + e.Message);
-			}
+                cursor.setAngle(obj.AngleDegrees);
+                cursorElements.Add(obj.SymbolID, cursor);
+                return cursor;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("createNewElement: " + e.Message);
+            }
 
-			return cursor;
+            return null;
 		}
 
         private CursorElement getExistingElement(TUIO.TuioObject obj) 
@@ -101,7 +116,7 @@ namespace TUI_Web.Data
 			rows[cursor.getRow()].elements[cursor.getCell()] = cursor.getElement();
         }
 
-		private ElementTypes getType(TUIO.TuioObject obj)
+		private ElementTypes getType(TuioObject obj)
 		{
 			ElementTypes type = ElementTypes.None;
 			switch (obj.SymbolID)
@@ -117,6 +132,10 @@ namespace TUI_Web.Data
 				case 2:
 					type = ElementTypes.Topic;
 					break;
+
+                case 3:
+                    type = ElementTypes.Save;
+                    break;
 			}
 
 			return type;
@@ -164,63 +183,75 @@ namespace TUI_Web.Data
         #endregion
 
         #region INPUT_EVENTS
-        public void InputListener_EVENT_updateObject(object sender, TUIO.TuioObject obj)
+        public void InputListener_EVENT_updateObject(object sender, TuioObject obj)
         {
             lock (lockObject)
             {
-                try
+                if (timer.ContainsKey(obj.SymbolID))
                 {
-                    CursorElement cursor = getExistingElement(obj);
+                    myTimer objTimer = null;
+                    timer.TryGetValue(obj.SymbolID, out objTimer);
+                    objTimer.stopTimer();
+                    Console.WriteLine("[{0}]CANCEL: {1}", obj.SymbolID, DateTime.Now.ToString("h:mm:ss.fff"));
+                    timer.Remove(obj.SymbolID);
+                }
 
-                    // TODO: StartTransaction -> if error, reset states
+                if (!tryToSaveObject(obj))
+                {
 
-                    // calculate cursor Position
-                    cursor.writeCursorPosition(obj, rows);
+                    if (!cursorElements.ContainsKey(obj.SymbolID))
+                        return;
 
-                    // if there is already a element -> stop
-                    //if (rows[cursor.getRow()].elementExists(cursor))
-                    //{
-                    //	return;
-                    //}
-
-                    // write new size of the cursor-element, may it has been changed
-                    cursor.writeCursorSize(obj, rows[cursor.getRow()]);
-
-                    // new Element is finished, set it to the grid!
-                    setOverlayElement(cursor);
-
-
-                    //Console.Write("update object( " + obj.SymbolID + " )\r\n" );
-                    int counter = 0;
-                    /*
-                    foreach (GridElement element in rows[cursor.getRow()].elements)
+                    try
                     {
-                        if (element.getOverlay() != null)
-                            Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.getOverlay().size + "\r\n ");
+                        CursorElement cursor = null;
+                        if ((cursor = getExistingElement(obj)) != null)
+                        {
+                            // calculate cursor Position, triggers event if changed
+                            cursor.writeCursorPosition(obj, rows);
+
+                            // write new size of the cursor-element, triggers event if changed
+                            cursor.writeCursorSize(obj, rows[cursor.getRow()]);
+
+                            // new Element is finished, set it to the grid!
+                            setOverlayElement(cursor);
+
+                            if (SettingsControler.DATACONTROLLER_SHOW_AFFECTED)
+                            {
+                                int counter = 0;
+                                foreach (GridElement element in rows[cursor.getRow()].elements)
+                                {
+                                    if (element.getOverlay() != null)
+                                        Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.getOverlay().size + "\r\n ");
+                                    else
+                                        Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.size + "\r\n ");
+
+                                    counter++;
+                                }
+
+                                int i = 0;
+                                foreach (GridRow row in rows)
+                                {
+                                    Console.WriteLine("R[" + i + "] aff:" + row.getAffectedCount());
+                                    i++;
+                                }
+                            }
+
+                            EVENT_dataUpdated?.Invoke(this, rows);
+                        }
                         else
-                            Console.Write("[" + cursor.getRow() + ";" + counter + "]:" + element.size + "\r\n ");
-
-                        counter++;
+                        {
+                            // object couldn´t be updated. 
+                            // cause the cursorlist is cleared after saving current page.
+                            // in this case we create new objects instead of searching for existing ones.
+                            InputListener_EVENT_newObject(sender, obj);
+                        }
                     }
-
-                    int i = 0;
-                    foreach (GridRow row in rows)
+                    catch (Exception e)
                     {
-                        Console.WriteLine("R[" + i + "] aff:" + row.getAffectedCount());
-                        i++;
+                        Console.WriteLine("InputListener_EVENT_updateObject: " + e.Message);
                     }
-                    */
-
-                    EVENT_dataUpdated?.Invoke(this, rows);
                 }
-                catch (Exception)
-                {
-                    // object couldn´t be updated. 
-                    // cause the cursorlist is cleared after saving current page.
-                    // in this case we create new objects instead of searching for existing ones.
-                    InputListener_EVENT_newObject(sender, obj);
-                }
-                
             }
         }
 
@@ -228,6 +259,9 @@ namespace TUI_Web.Data
         {
             lock (lockObject)
             {
+                if (!cursorElements.ContainsKey(obj.SymbolID))
+                    return;
+
                 if (timer.ContainsKey(obj.SymbolID))
                 {
                     // timer is still running? 
@@ -244,29 +278,34 @@ namespace TUI_Web.Data
                     myTimer.startTimer(obj);
                 }
             }
-            /*
+        }
 
-            if (!trigger)
-                return;
+        private bool tryToSaveObject(TuioObject obj)
+        {
+            if (getType(obj) == ElementTypes.Save)
+            {
+                if (saveCursor == null)
+                {
+                    saveCursor = new CursorElement();
+                    saveCursor.EVENT_PositionChanged += Cursor_EVENT_SAVE_PositionChanged;
+                }
+                saveCursor.writeCursorPosition(obj, rows);
+                return true;
+            }
+            return false;
+        }
 
-            trigger = false;
-
-
-			try
-			{
-                CursorElement cursor = getExistingElement(obj);
-                removeOverlayElement(cursor);
-				cursorElements.Remove(obj.SymbolID);
-				Console.WriteLine("remove object -->" + obj.SymbolID);
-				EVENT_dataUpdated?.Invoke(this, rows);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.Message);
-			}
-
-            trigger = true;
-            */
+        private void Cursor_EVENT_SAVE_PositionChanged(object sender, CursorEventPositionArgs e)
+        {
+            CursorElement cSender = (CursorElement)sender;
+            foreach (KeyValuePair<int, CursorElement> cursor in cursorElements)
+            {
+                if (cSender.getPosition().row == cursor.Value.getPosition().row &&
+                    cSender.getPosition().cell == cursor.Value.getPosition().cell)
+                {
+                    save(cSender);
+                }
+            }
         }
 
         public void InputListener_EVENT_newObject(object sender, TuioObject obj)
@@ -283,36 +322,56 @@ namespace TUI_Web.Data
                 }
                 else
                 {
-                    if (!cursorElements.ContainsKey(obj.SymbolID))
+                    if (!tryToSaveObject(obj))
                     {
-                        try
+                        if (!cursorElements.ContainsKey(obj.SymbolID))
                         {
-                            CursorElement cursor = createNewElement(obj);
+                            try
+                            {
+                                // TEST
+                                CursorElement cursor = null;
+                                if (!SettingsControler.MULTI_ELEMENT)
+                                {
+                                    if (cursorElements.Count >= 1)
+                                    {
+                                        foreach (KeyValuePair<int, CursorElement> curElement in cursorElements)
+                                        {
+                                            GridElement gElement = null;
+                                            if ((gElement = getElement(curElement.Value.getRow(), curElement.Value.getCell())) != null)
+                                            {
+                                                CursorElement removeCursor = new CursorElement();
+                                                removeCursor.setElement(gElement.getOverlay());
+                                                removeCursor.getElement().type = ElementTypes.Delete;
+                                                gElement.setOverlay(removeCursor.getElement());
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        cursor = createNewElement(obj);
+                                    }
+                                }
+                                else
+                                    cursor = createNewElement(obj);
 
-                            cursor.writeCursorPosition(obj, rows);
-                            cursor.getElement().type = getType(obj);
+                                // new cursor is set, do rest
+                                if (cursor != null)
+                                {
+                                    cursor.writeCursorPosition(obj, rows);
+                                    cursor.getElement().type = getType(obj);
 
-                            setOverlayElement(cursor);
+                                    setOverlayElement(cursor);
 
-                            Console.WriteLine("new object -->" + obj.SymbolID);
-                            EVENT_dataUpdated?.Invoke(this, rows);
+                                    Console.WriteLine("new object -->" + obj.SymbolID);
+                                    EVENT_dataUpdated?.Invoke(this, rows);
+                                }
+                            }
+                            catch (Exception e) { Console.WriteLine("InputListener_EVENT_newObject: " + e.Message); }
                         }
-                        catch (Exception e) { Console.WriteLine("InputListener_EVENT_newObject: " + e.Message); }
+                        else return;
                     }
-                    else return;
                 }
             }
-
-            /*
-            if (!trigger)
-                return;
-
-            trigger = false;
-
-    */
-
-
-            //trigger = true;
         }
         #endregion
 
@@ -465,6 +524,5 @@ namespace TUI_Web.Data
             }
         }
         #endregion
-
     }
 }

@@ -132,13 +132,20 @@ namespace TUI_Web.Export
 
 				case ElementTypes.Text:
 					writer.RenderBeginTag(HtmlTextWriterTag.Div);
+                    writer.RenderBeginTag(HtmlTextWriterTag.P);
 					writer.Write(ElementDataHolder.getTextContent());
+                    writer.RenderEndTag();
 					break;
 
 				case ElementTypes.Topic:
 					writer.RenderBeginTag(HtmlTextWriterTag.H1);
 					writer.Write(ElementDataHolder.getTopicContent());
 					break;
+
+                case ElementTypes.Delete:
+                    writer.AddAttribute(HtmlTextWriterAttribute.Src, ElementDataHolder.getRemoveImagePath());
+                    writer.RenderBeginTag(HtmlTextWriterTag.Img);
+                    break;
 			}
 
 

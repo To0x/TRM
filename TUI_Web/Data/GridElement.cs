@@ -6,7 +6,7 @@ using System.Text;
 using TUI_Web;
 using TUI_Web.Settings;
 
-public enum ElementTypes { None, Topic, Text, Graphic };
+public enum ElementTypes { None, Topic, Text, Graphic, Delete, Save };
 
 public class OverlayElement : GridElement
 {
@@ -64,5 +64,4 @@ public class GridElement
     {
         return overlayElement;
     }
-
 }

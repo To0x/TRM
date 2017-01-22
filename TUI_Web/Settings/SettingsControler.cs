@@ -34,10 +34,18 @@ namespace TUI_Web.Settings
 
         // how long we have to wait, until the object can rly be removed!
         // problem is, that the camera (or the reactivision-software) triggers remove & new even if the element is not moved!
-        public static int REMOVE_WAITTIME = 1000;
+        public static int REMOVE_WAITTIME = 2500;
 
         // is the cmaera pic inverted? 
-        public static bool INVERTED = true;
+        // should be true, if the camera captures the picture from below
+        public static bool INVERTED = false;
+
+        // if this is set to true, more than one element can be on the ground at the same time
+        public static bool MULTI_ELEMENT = false;
+
+        // if this is set to true, the output is more verbose
+        // this will show the count of affected elements on the current row
+        public static bool DATACONTROLLER_SHOW_AFFECTED = true;
 
         // how much degrees have the angle to be changed, before the size will also be changed.
         // for example: 360° includes 10 steps for size-changing. Each 36° degrees, the size will be changed
