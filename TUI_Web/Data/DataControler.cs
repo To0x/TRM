@@ -40,7 +40,7 @@ namespace TUI_Web.Data
 
         public List<GridRow> getData()
 		{
-			return this.rows;
+			return rows;
 		}
 
         public void save(object sender = null, object e = null)
@@ -65,12 +65,10 @@ namespace TUI_Web.Data
         {
             if (getElement(cursor.getPosition().row, cursor.getPosition().cell).getOverlay() != null)
             {
+                // TODO inform user!
                 setRealElement(cursor);
                 Console.WriteLine("SAVED: " + cursor.getPosition().row + " ; " + cursor.getPosition().cell);
             }
-            
-
-            // TODO inform user!
         }
 
         #region private

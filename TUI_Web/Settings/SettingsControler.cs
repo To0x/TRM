@@ -41,11 +41,11 @@ namespace TUI_Web.Settings
         public static bool INVERTED = false;
 
         // if this is set to true, more than one element can be on the ground at the same time
-        public static bool MULTI_ELEMENT = false;
+        public static bool MULTI_ELEMENT = true;
 
         // if this is set to true, the output is more verbose
         // this will show the count of affected elements on the current row
-        public static bool DATACONTROLLER_SHOW_AFFECTED = true;
+        public static bool DATACONTROLLER_SHOW_AFFECTED = false;
 
         // how much degrees have the angle to be changed, before the size will also be changed.
         // for example: 360° includes 10 steps for size-changing. Each 36° degrees, the size will be changed

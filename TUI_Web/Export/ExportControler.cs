@@ -174,6 +174,8 @@ namespace TUI_Web.Export
 
         private void writeBody(List<GridRow> rows)
         {
+            // TODO
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, String.Format("col-md-{0}", SettingsControler.BOOTSTRAP_SIZE) + " fontStyle-6 fontColor-1 LookAndFeel-1");
             writer.RenderBeginTag(HtmlTextWriterTag.Body);
             foreach (GridRow row in rows)
             {

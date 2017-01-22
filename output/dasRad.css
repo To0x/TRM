@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css?family=Arsenal|Cormorant:400,700|Lato:400,700|Lora:400,700|Open+Sans+Condensed:300,700|Overpass:400,700|Raleway:400,700|Roboto+Condensed:400,700|Roboto:400,700|Rokkitt:400,700');
+
+/******
+https://color.adobe.com/de/Farbdesign-3-color-theme-9107610/edit/?copy=true&base=2&rule=Custom&selected=3&name=Kopie%20von%20Farbdesign%203&mode=rgb&rgbvalues=0.760768147637067,0.7372379749788318,0.6901767849473934,0.7058630224668614,0.6627241078395679,0.5842893724677373,0.2509503216989992,0.2078143468980215,0.1803643734461815,0.09017318588354253,0.1372289918103108,0.1489931666400531,0.3411457318509443,0.3215381886519123,0.3136951830703294&swatchOrder=0,1,2,3,4
+https://color.adobe.com/de/Dnt08-color-theme-9107666/edit/?copy=true
+https://color.adobe.com/de/DNT30-color-theme-9107665/edit/?copy=true
+https://color.adobe.com/de/Palette-de-couleurs-14-color-theme-9107682/edit/?copy=true
+https://color.adobe.com/de/cedarbrae-color-theme-9107685/edit/?copy=true
+https://color.adobe.com/de/Color-Theme-21-color-theme-9107688/edit/?copy=true
+https://color.adobe.com/de/flow2-color-theme-9107824/edit/?copy=true
+https://color.adobe.com/de/Color-Theme-6-color-theme-9107857/edit/?copy=true
+*/
+/*Color-Set1*/
+/*
+Hintergrund		- 
+Col-Border		- 
+Cursor			- 
+Color			- 
+
+fontStyle		-
+*/
+
+/*Farben Start*/
+/******************/
+/*LookAndFeel Start*/
+body.LookAndFeel-1{
+	background-color: #081C29;
+}
+body.LookAndFeel-1 .cursor{
+	border-color: #FDA533;
+}
+.LookAndFeel-1 div, .LookAndFeel-1 p{
+	border-color:#fff;
+}
+
+body.LookAndFeel-2{
+	background-color: #2E2F2F;
+}
+body.LookAndFeel-2 .cursor{
+	border-color: #481427;
+}
+.LookAndFeel-2 div, .LookAndFeel-2 p{
+	border-color:#eee;
+}
+
+body.LookAndFeel-3{
+	background-color: #F3F3F3;
+}
+body.LookAndFeel-3 .cursor{
+	border-color: #4A68A4;
+}
+.LookAndFeel-3 div, .LookAndFeel-3 p{
+	border-color:#D0644E;
+}
+
+
+body.LookAndFeel-4{
+	background-color: #507C6D;
+}
+body.LookAndFeel-4 .cursor{
+	border-color: #B2A08C;
+}
+.LookAndFeel-4 div, .LookAndFeel-4 p{
+	border-color:#B2A08C;
+}
+
+
+body.LookAndFeel-5{
+	background-color: #;
+}
+body.LookAndFeel-5 .cursor{
+	border-color: #;
+}
+.LookAndFeel-5 div, .LookAndFeel-5 p{
+	border-color:#;
+}
+
+
+body.LookAndFeel-6{
+	background-color: #;
+}
+body.LookAndFeel-6 .cursor{
+	border-color: #;
+}
+.LookAndFeel-6 div, .LookAndFeel-6 p{
+	border-color:#;
+}
+
+
+body.LookAndFeel-7{
+	background-color: #;
+}
+body.LookAndFeel-7 .cursor{
+	border-color: #;
+}
+.LookAndFeel-7 div, .LookAndFeel-7 p{
+	border-color:#;
+}
+
+
+body.LookAndFeel-8{
+	background-color: #;
+}
+body.LookAndFeel-8 .cursor{
+	border-color: #;
+}
+.LookAndFeel-8 div, .LookAndFeel-8 p{
+	border-color:#;
+}
+
+
+body.LookAndFeel-9{
+	background-color: #;
+}
+body.LookAndFeel-9 .cursor{
+	border-color: #;
+}
+.LookAndFeel-9 div, .LookAndFeel-9 p{
+	border-color:#;
+}
+
+
+body.LookAndFeel-10{
+	background-color: #;
+}
+body.LookAndFeel-10 .cursor{
+	border-color: #;
+}
+.LookAndFeel-10 div, .LookAndFeel-10 p{
+	border-color:#;
+}
+
+/*LookAndFeel Ende*/
+/******************/
+/******************/
+/*fontColor Start*/
+body.fontColor-1{
+	color:#eee;
+}
+body.fontColor-2{
+	color:#eee;
+}
+body.fontColor-3{
+	color:#333;
+}
+body.fontColor-4{
+	color:#BF8C3B;
+}
+body.fontColor-5{
+	color:#eee;
+}
+body.fontColor-6{
+	color:#eee;
+}
+body.fontColor-7{
+	color:#eee;
+}
+body.fontColor-8{
+	color:#eee;
+}
+body.fontColor-9{
+	color:#eee;
+}
+body.fontColor-10{
+	color:#eee;
+}
+
+/*fontColor Ende*/
+/******************/
+/******************/
+/*fontStyle Start*/
+.fontStyle-1 h1, .fontStyle-1 p{
+	font-family: 'Roboto', sans-serif;
+}
+.fontStyle-2 h1, .fontStyle-2 p{
+	font-family: 'Arsenal', sans-serif;
+}
+.fontStyle-3 h1, .fontStyle-3 p{
+	font-family: 'Overpass', sans-serif;
+}
+.fontStyle-4 h1, .fontStyle-4 p{
+	font-family: 'Lato', sans-serif;
+}
+.fontStyle-5 h1, .fontStyle-5 p{
+	font-family: 'Roboto Condensed', sans-serif;
+}
+.fontStyle-6 h1, .fontStyle-6 p{
+	font-family: 'Raleway', sans-serif;
+}
+.fontStyle-7 h1, .fontStyle-7 p{
+	font-family: 'Cormorant', sans-serif;
+}
+.fontStyle-8 h1, .fontStyle-8 p{
+	font-family: 'Open Sans Condensed', sans-serif;
+}
+.fontStyle-9 h1, .fontStyle-9 p{
+	font-family: 'Lora', sans-serif;
+}
+.fontStyle-10 h1, .fontStyle-10 p{
+	font-family: 'Rokkitt', sans-serif;
+}
+/*fontStyle Ende*/
+/******************/
+
+
+/******************/
+/*Allgmein Start*/
+body .col-md-12 {      
+  display: -webkit-flex;        
+  display: -ms-flexbox;     
+  display: flex;
+  overflow: hidden;
+  min-height:120px;
+}
+.cursor{
+	border-width: 5px!important;
+	border-style:dashed;
+}
+/*Col Start*/
+.col-xs-1, .col-xs-2 , .col-xs-3 , .col-xs-4 , .col-xs-5 , .col-xs-6 , .col-xs-7 , .col-xs-9, .col-xs-10 , .col-xs-11 , .col-xs-12 , 
+.col-sm-1, .col-sm-2 , .col-sm-3 , .col-sm-4 , .col-sm-5 , .col-sm-6 , .col-sm-7 , .col-sm-9, .col-sm-10 , .col-sm-11 , .col-sm-12 , 
+.col-md-1, .col-md-2 , .col-md-3 , .col-md-4 , .col-md-5 , .col-md-6 , .col-md-7 , .col-md-9, .col-md-10 , .col-md-11 , .col-md-12 , 
+.col-lg-1, .col-lg-2 , .col-lg-3 , .col-lg-4 , .col-lg-5 , .col-lg-6 , .col-lg-7 , .col-lg-9, .col-lg-10 , .col-lg-11 , .col-lg-12 ,
+.col-md-12 .col-md-12{
+	border-radius:20px;
+	border:1px dashed;
+}
+ 
+.LookAndFeel-1 > .col-md-12, .LookAndFeel-2 > .col-md-12, .LookAndFeel-3 > .col-md-12, .LookAndFeel-4 > .col-md-12, .LookAndFeel-5 > .col-md-12
+.LookAndFeel-6 > .col-md-12, .LookAndFeel-7 > .col-md-12, .LookAndFeel-8 > .col-md-12, .LookAndFeel-9 > .col-md-12, .LookAndFeel-10 > .col-md-12
+{
+	border:none;
+	border-radius:0px;
+}
+
+/*Image Start*/
+img{
+	max-height: 300px;
+	object-fit:cover;	
+}
+.col-md-12 img{
+	padding:0px;
+}
+
+/*Text Start*/
+h1{
+ 	font-weight:700;
+ 	font-size:3.3em;
+ 	margin-top:0;
+ 	margin-bottom:0;
+ 	text-align:center;
+}
+
+h1, p{
+ 	padding-top:40px;
+}
+
+/*Allgmein Ende*/
+/******************/
