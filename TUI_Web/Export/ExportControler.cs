@@ -12,6 +12,8 @@ namespace TUI_Web.Export
         public event EventHandler EVENT_exportFinished;
 
         private HtmlTextWriter writer = null;
+        private FileStream fs = null;
+
         private Settings.SettingsControler settingsControler = null;
 		public Object lockObjekt = new Object();
 		private bool writingInProgress = false;
@@ -40,34 +42,32 @@ namespace TUI_Web.Export
         }
         */
 
-        // export the current content to the html-file
-        public void exportToHtml(object sender, List<GridRow> rows)
+        public void exportToHtml(object sender, List<GridRow> rows, bool initial)
         {
-			createHtmlWriter();
-			writingInProgress = true;
-			lock(lockObjekt)
-			{
-				// Datie nicht immer neu schreiben, sondern erneuern!
-				//File.WriteAllText(settingsControler.getFileLocation(), String.Empty);
-				writer.RenderBeginTag(HtmlTextWriterTag.Html);
-				{
-					writeHead();
-					writeBody(rows);
-				}
-				writer.RenderEndTag();
-				writer.Flush();
-			}
-			writingInProgress = false;
-			close();
+            createHtmlWriter(initial);
+            writingInProgress = true;
+            lock (lockObjekt)
+            {
+                // Datie nicht immer neu schreiben, sondern erneuern!
+                //File.WriteAllText(settingsControler.getFileLocation(), String.Empty);
+                writer.RenderBeginTag(HtmlTextWriterTag.Html);
+                {
+                    writeHead();
+                    writeBody(rows);
+                }
+                writer.RenderEndTag();
+                close();
+                writingInProgress = false;
+            }
             EVENT_exportFinished?.Invoke(this, null);
         }
 
-        /*
-        private void exportToHtml(object sender, List<GridRow> rows, Dictionary<int, Data.CursorElement> cursors)
+        // export the current content to the html-file
+        public void exportToHtml(object sender, List<GridRow> rows)
         {
-            exportToHtml(sender, rows);
+            exportToHtml(sender, rows, false);
         }
-        */
+
 
 		public bool getLockState()
 		{
@@ -77,6 +77,11 @@ namespace TUI_Web.Export
 
         private void close()
         {
+            // don´t know why, but if the website is empty, we need to set the lengt to zero
+            // otherwise the flush will print information of the website before (this might been longer than the new one -.^) 
+            if (fs.Position == 0)
+                fs.SetLength(0L);
+
             writer.Flush();
             writer.Close();
 			writer = null;
@@ -84,17 +89,27 @@ namespace TUI_Web.Export
 
         // is used to create the HtmlTextWriter-Class
         // is also used to create the file or open it (if it exists)
-        private void createHtmlWriter()
+        private void createHtmlWriter(bool initial)
         {
+            if (writer != null)
+                return;
+
             string filePath = settingsControler.getFileLocation();
-            FileStream fs;
+            fs = null;
             if (!File.Exists(filePath))
             {
                 fs = new FileStream(filePath, FileMode.Create);
             }
             else
             {
-                fs = new FileStream(filePath, FileMode.Open);
+                // TODO! only if the program restarts!
+                if (initial)
+                {
+                    File.Delete(filePath);
+                    fs = new FileStream(filePath, FileMode.Create);
+                }
+                else
+                    fs = new FileStream(filePath, FileMode.Open);
             }
             StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8);
             writer = new HtmlTextWriter(streamWriter);

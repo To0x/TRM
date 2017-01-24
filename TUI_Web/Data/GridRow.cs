@@ -105,6 +105,7 @@ public class GridRow : IEnumerable<GridRow>
         else
         {
             affected = false;
+            elementCount = SettingsControler.GRID_ELEMENTS;
             foreach (GridElement element in elements)
             {
                 element.setOverlay(null);

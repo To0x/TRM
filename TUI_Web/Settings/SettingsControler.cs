@@ -20,7 +20,7 @@ namespace TUI_Web.Settings
 
         // tells how many size steps can be used while the element turned around.
         // 10 steps is one complete round of the element (360°)
-        public const int SIZESTEPS_PER_CIRCLE = 10;
+        public const int SIZESTEPS_PER_CIRCLE = 6;
 
         // each element could not be smaller than the following size
         public const int MINIMUN_ELEMENT_SIZE = 2;
@@ -34,18 +34,18 @@ namespace TUI_Web.Settings
 
         // how long we have to wait, until the object can rly be removed!
         // problem is, that the camera (or the reactivision-software) triggers remove & new even if the element is not moved!
-        public static int REMOVE_WAITTIME = 2500;
+        public static int REMOVE_WAITTIME = 1000;
 
         // is the cmaera pic inverted? 
         // should be true, if the camera captures the picture from below
-        public static bool INVERTED = false;
+        public static bool INVERTED = true;
 
         // if this is set to true, more than one element can be on the ground at the same time
         public static bool MULTI_ELEMENT = true;
 
         // if this is set to true, the output is more verbose
         // this will show the count of affected elements on the current row
-        public static bool DATACONTROLLER_SHOW_AFFECTED = false;
+        public static bool DATACONTROLLER_SHOW_AFFECTED = true;
 
         // how much degrees have the angle to be changed, before the size will also be changed.
         // for example: 360° includes 10 steps for size-changing. Each 36° degrees, the size will be changed

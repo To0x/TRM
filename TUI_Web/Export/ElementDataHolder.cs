@@ -16,7 +16,7 @@ namespace TUI_Web
 		public static string getImageSourcePath()
 		{
             string path = String.Format(imagePath, i++);
-            Console.WriteLine("PATH:"  + path);
+            //Console.WriteLine("PATH:"  + path);
 
             // TODO
             if (i == 7)

@@ -168,6 +168,10 @@ namespace TUI_Web.Data
             try
             {
                 CursorElement cursor = getExistingElement(removeableObj);
+
+                if (cursor.affected)
+                    rows[cursor.getRow()].decreaseSizeAffected();
+
                 removeOverlayElement(cursor);
                 cursorElements.Remove(removeableObj.SymbolID);
                 //Console.WriteLine("remove object -->" + removeableObj.SymbolID);

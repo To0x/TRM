@@ -52,7 +52,7 @@ namespace TUI_Web
 			inputControler.connect();
 
 			// create the first html-file to open
-			exportControler.exportToHtml(this, dataControler.getData());
+			exportControler.exportToHtml(this, dataControler.getData(), true);
 
 
             mainView.EVENT_View_SaveClicked += dataControler.save;

@@ -171,16 +171,78 @@ namespace TUI_Web.Data
 			}
         }
 
+        private bool isIncreased(TUIO.TuioObject obj)
+        {
+            if (SettingsControler.INVERTED)
+            {
+                if (obj.AngleDegrees < angle - SettingsControler.sizeStep())
+                {
+                    return true;
+                }
+                else if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                // || (obj.AngleDegrees < 0 + SettingsControler.sizeStep() && angle > 360 - SettingsControler.sizeStep()))
+                if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
+                {
+                    return true;
+                }
+                // || obj.AngleDegrees > 360 - SettingsControler.sizeStep() && angle < 0 + SettingsControler.sizeStep())
+                else if (obj.AngleDegrees < angle - SettingsControler.sizeStep() )
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        private bool isDecreased(TUIO.TuioObject obj)
+        {
+            if (SettingsControler.INVERTED)
+            {
+                if (obj.AngleDegrees < angle - SettingsControler.sizeStep())
+                {
+                    return false;
+                }
+                else if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                // || (obj.AngleDegrees < 0 + SettingsControler.sizeStep() && angle > 360 - SettingsControler.sizeStep()))
+                if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
+                    
+                {
+                    return false;
+                }
+                // ||  obj.AngleDegrees > 360 - SettingsControler.sizeStep() && angle < 0 + SettingsControler.sizeStep())
+                else if (obj.AngleDegrees < angle - SettingsControler.sizeStep())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void writeCursorSize(TUIO.TuioObject obj, GridRow row)
         {
-            Console.WriteLine("[{0}] angle: " + Math.Round(obj.AngleDegrees,0) + "Saved: " + Math.Round(angle,0), obj.SymbolID);
+            Console.WriteLine("obj-angle: " + obj.AngleDegrees + "SAVED: " + angle);
 
-			if ((int)(obj.AngleDegrees) != (int)(angle))
+            if ((int)(obj.AngleDegrees) != (int)(angle))
             {
                 CursorEventSizeArgs sizeArgs = new CursorEventSizeArgs();
 
                 // the angle of the object was changed 
-                if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
+                //if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
+                if (isIncreased(obj))
                 {
                     // the size can only increase if the following are true:
                     // 1. Maximum Size is not Reached yet
@@ -193,7 +255,7 @@ namespace TUI_Web.Data
                         int count = 0;
                         if ((count += row.getDecreasableElementCount(element)) > 0)
                         {
-                            
+
                             // these elememnts must decrease their size
                             if (element.size + count <= SettingsControler.MAXIMUM_ELEMENT_SIZE
                                 && element.size + count >= SettingsControler.MINIMUN_ELEMENT_SIZE)
@@ -212,10 +274,10 @@ namespace TUI_Web.Data
                             }
                         }
                         // 2.2. kick out the smallest element
-                        else if (row.getSmallestSize() == SettingsControler.MINIMUN_ELEMENT_SIZE 
+                        else if (row.getSmallestSize() == SettingsControler.MINIMUN_ELEMENT_SIZE
                             && row.getSmallestElement().type == ElementTypes.None)
                         {
-                            
+
                             element.size += SettingsControler.MINIMUN_ELEMENT_SIZE;
 
                             sizeArgs = new CursorEventSizeArgs();
@@ -230,7 +292,8 @@ namespace TUI_Web.Data
                     angle = obj.AngleDegrees;
 
                 }
-                else if (obj.AngleDegrees < angle - SettingsControler.sizeStep())
+                //
+                else if (isDecreased(obj))
                 {
                     // the size can only decrease if the following are true:
                     // 1. Minimum Size is not Reached yet
@@ -262,6 +325,93 @@ namespace TUI_Web.Data
                     angle = obj.AngleDegrees;
                 }
             }
+                /*
+                else
+                {
+                    if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
+                    {
+                        // the size can only increase if the following are true:
+                        // 1. Maximum Size is not Reached yet
+                        // 2.1. Other elements can be decrease OR
+                        // 2.2. another element can be set their size to 0. 
+                        if (element.size < SettingsControler.MAXIMUM_ELEMENT_SIZE)
+                        {
+
+                            // 2.1. other elements can be decreased
+                            int count = 0;
+                            if ((count += row.getDecreasableElementCount(element)) > 0)
+                            {
+
+                                // these elememnts must decrease their size
+                                if (element.size + count <= SettingsControler.MAXIMUM_ELEMENT_SIZE
+                                    && element.size + count >= SettingsControler.MINIMUN_ELEMENT_SIZE)
+                                {
+                                    element.size += count;
+
+                                    sizeArgs.changeType = SizeChangingType.DecreaseOther;
+                                    sizeArgs.changeSteps = -1;
+                                }
+                                else
+                                {
+                                    element.size += SettingsControler.MINIMUN_ELEMENT_SIZE;
+
+                                    sizeArgs.changeType = SizeChangingType.DecreaseOther;
+                                    sizeArgs.changeSteps = -2;
+                                }
+                            }
+                            // 2.2. kick out the smallest element
+                            else if (row.getSmallestSize() == SettingsControler.MINIMUN_ELEMENT_SIZE
+                                && row.getSmallestElement().type == ElementTypes.None)
+                            {
+
+                                element.size += SettingsControler.MINIMUN_ELEMENT_SIZE;
+
+                                sizeArgs = new CursorEventSizeArgs();
+                                sizeArgs.changeType = SizeChangingType.RemoveLast;
+                                sizeArgs.changeSteps = SettingsControler.MAXIMUM_ELEMENT_SIZE;
+                            }
+
+
+                            Console.WriteLine("Size++");
+                            EVENT_SizeChanged?.Invoke(this, sizeArgs);
+                        }
+                        angle = obj.AngleDegrees;
+
+                    }
+                    //
+                    else if (obj.AngleDegrees < angle - SettingsControler.sizeStep())
+                    {
+                        // the size can only decrease if the following are true:
+                        // 1. Minimum Size is not Reached yet
+                        // 2. Other elements can increase OR
+                        // TODO?: Another Element can inserted
+                        if (element.size >= SettingsControler.MINIMUN_ELEMENT_SIZE)
+                        {
+                            // 2. Other elements can increase OR
+                            int count = 0;
+                            if ((count += row.getIncreasableElementCount(this.element)) > 0)
+                            {
+                                // if there are no elements to increase, we cant adjust the size anymore
+                                if (count == 0)
+                                    return;
+
+                                if (element.size - count >= SettingsControler.MINIMUN_ELEMENT_SIZE)
+                                {
+                                    element.size -= count;
+
+                                    sizeArgs = new CursorEventSizeArgs();
+                                    sizeArgs.changeType = SizeChangingType.IncreaseOther;
+                                    sizeArgs.changeSteps = 1;
+
+                                    System.Console.WriteLine("Size--");
+                                    EVENT_SizeChanged?.Invoke(this, sizeArgs);
+                                }
+                            }
+                        }
+                        angle = obj.AngleDegrees;
+                    }
+                }
+                */
+            }
         }
     }
-}
