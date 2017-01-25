@@ -47,6 +47,8 @@ namespace TUI_Web.Settings
         // this will show the count of affected elements on the current row
         public static bool DATACONTROLLER_SHOW_AFFECTED = true;
 
+        public static int STYLE_COUNT = 6;
+
         // how much degrees have the angle to be changed, before the size will also be changed.
         // for example: 360° includes 10 steps for size-changing. Each 36° degrees, the size will be changed
         public static float sizeStep()

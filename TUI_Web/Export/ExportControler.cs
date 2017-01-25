@@ -42,7 +42,7 @@ namespace TUI_Web.Export
         }
         */
 
-        public void exportToHtml(object sender, List<GridRow> rows, bool initial)
+        public void exportToHtml(object sender, List<GridRow> rows, bool initial, Data.StyleData style)
         {
             createHtmlWriter(initial);
             writingInProgress = true;
@@ -53,7 +53,7 @@ namespace TUI_Web.Export
                 writer.RenderBeginTag(HtmlTextWriterTag.Html);
                 {
                     writeHead();
-                    writeBody(rows);
+                    writeBody(rows, style);
                 }
                 writer.RenderEndTag();
                 close();
@@ -63,9 +63,9 @@ namespace TUI_Web.Export
         }
 
         // export the current content to the html-file
-        public void exportToHtml(object sender, List<GridRow> rows)
+        public void exportToHtml(object sender, List<GridRow> rows, Data.StyleData style)
         {
-            exportToHtml(sender, rows, false);
+            exportToHtml(sender, rows, false, style);
         }
 
 
@@ -91,9 +91,6 @@ namespace TUI_Web.Export
         // is also used to create the file or open it (if it exists)
         private void createHtmlWriter(bool initial)
         {
-            if (writer != null)
-                return;
-
             string filePath = settingsControler.getFileLocation();
             fs = null;
             if (!File.Exists(filePath))
@@ -163,10 +160,6 @@ namespace TUI_Web.Export
                     break;
 			}
 
-
-			//writer.WriteLine(ElementDataHolder.getHtmlContent(element.type));
-
-            //writer.RenderBeginTag(HtmlTextWriterTag.Div);
             writer.RenderEndTag();
             writer.WriteLine();
         }
@@ -187,10 +180,14 @@ namespace TUI_Web.Export
 
         }
 
-        private void writeBody(List<GridRow> rows)
+        private void writeBody(List<GridRow> rows, Data.StyleData style)
         {
             // TODO
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, String.Format("col-md-{0}", SettingsControler.BOOTSTRAP_SIZE) + " fontStyle-6 fontColor-1 LookAndFeel-1");
+            writer.AddAttribute(HtmlTextWriterAttribute.Class,
+                String.Format("col-xs-{0} col-md-{0} fontStyle-{1} fontColor-{2} LookAndFeel-{3}", 
+                SettingsControler.BOOTSTRAP_SIZE, style.getFontStyle(), style.getFontColor(), style.getLookAndFeel()));
+
+
             writer.RenderBeginTag(HtmlTextWriterTag.Body);
             foreach (GridRow row in rows)
             {

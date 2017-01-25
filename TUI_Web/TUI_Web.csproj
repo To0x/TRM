@@ -52,6 +52,7 @@
     <Compile Include="Data\GridElement.cs" />
     <Compile Include="Data\GridRow.cs" />
     <Compile Include="Data\InputControler.cs" />
+    <Compile Include="Data\StyleData.cs" />
     <Compile Include="Data\TestData.cs" />
     <Compile Include="Export\ExportControler.cs" />
     <Compile Include="MainView.cs">

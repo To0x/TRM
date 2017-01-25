@@ -9,11 +9,13 @@ namespace TUI_Web.Data
 	{
         #region VARIABLES
         public event EventHandler<List<GridRow>> EVENT_dataUpdated;
+        public event EventHandler<CursorEventSizeArgs> EVENT_styleChanged;
 		private List<GridRow> rows;
 		private Dictionary<int, CursorElement> cursorElements;
         private Dictionary<int, myTimer> timer;
 
         private CursorElement saveCursor = null;
+        private CursorElement manipulationCursor = null;
 
         private object lockObject = new object();
         #endregion
@@ -114,7 +116,7 @@ namespace TUI_Web.Data
 			rows[cursor.getRow()].elements[cursor.getCell()] = cursor.getElement();
         }
 
-		private ElementTypes getType(TuioObject obj)
+		private ElementTypes getWebType(TuioObject obj)
 		{
 			ElementTypes type = ElementTypes.None;
 			switch (obj.SymbolID)
@@ -134,10 +136,39 @@ namespace TUI_Web.Data
                 case 3:
                     type = ElementTypes.Save;
                     break;
+
+                default:
+                    type = ElementTypes.Unknown;
+                    break;
 			}
 
 			return type;
 		}
+
+        private ManipulationTypes getManipulationType(TuioObject obj)
+        {
+            ManipulationTypes type;
+            switch (obj.SymbolID)
+            {
+                case 5:
+                    type = ManipulationTypes.FontColor;
+                    break;
+
+                case 6:
+                    type = ManipulationTypes.FontSize;
+                    break;
+
+                case 7:
+                    type = ManipulationTypes.LookAndFeel;
+                    break;
+
+                default:
+                    type = ManipulationTypes.Unknown;
+                    break;
+            }
+
+            return type;
+        }
 
         // calculates the new size of the given element 
         // the calculation only will be provided if:
@@ -198,9 +229,9 @@ namespace TUI_Web.Data
                     timer.Remove(obj.SymbolID);
                 }
 
-                if (!tryToSaveObject(obj))
+                //if (!tryToSaveObject(obj))
+                if (isWebElement(obj))
                 {
-
                     if (!cursorElements.ContainsKey(obj.SymbolID))
                         return;
 
@@ -282,14 +313,77 @@ namespace TUI_Web.Data
             }
         }
 
+        private bool isWebElement(TuioObject obj)
+        {
+            ElementTypes webType;
+            if ((webType = getWebType(obj)) == ElementTypes.Unknown)
+            {
+                if (getManipulationType(obj) != ManipulationTypes.Unknown)
+                {
+                    tryToChangeStyle(obj);
+                }
+                return false;
+            }
+            else
+            {
+                if (webType == ElementTypes.Save)
+                {
+                    tryToSaveObject(obj);
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
+        private bool tryToChangeStyle(TuioObject obj)
+        {
+            if (getManipulationType(obj) != ManipulationTypes.Unknown)
+            {
+                if (manipulationCursor == null)
+                {
+                    // add cursor to list? 
+                    manipulationCursor = new CursorElement();
+                    manipulationCursor.getElement().setManipulationType(getManipulationType(obj));
+                    manipulationCursor.EVENT_SizeChanged += ManipulationCursor_EVENT_SizeChanged;
+                    manipulationCursor.writeCursorSize(obj);
+                }
+                else
+                    manipulationCursor.writeCursorSize(obj);
+
+                return true;
+            }
+            return false;
+        }
+
+        private void ManipulationCursor_EVENT_SizeChanged(object sender, CursorEventSizeArgs e)
+        {
+            Console.WriteLine("style changed!!!");
+
+            CursorElement cursor = (CursorElement)sender;
+            if (e.changeType == SizeChangingType.DecreaseOther ||
+                e.changeType == SizeChangingType.RemoveLast)
+            {
+                // size increased
+            }
+            else if (e.changeType == SizeChangingType.IncreaseOther)
+            {
+                // size decreased
+            }
+
+            EVENT_styleChanged?.Invoke(sender, e);
+        }
+
         private bool tryToSaveObject(TuioObject obj)
         {
-            if (getType(obj) == ElementTypes.Save)
+            if (getWebType(obj) == ElementTypes.Save)
             {
                 if (saveCursor == null)
                 {
                     saveCursor = new CursorElement();
-                    saveCursor.EVENT_PositionChanged += Cursor_EVENT_SAVE_PositionChanged;
+                    saveCursor.EVENT_PositionChanged += SaveCursor_EVENT_PositionChanged;
                 }
                 saveCursor.writeCursorPosition(obj, rows);
                 return true;
@@ -297,7 +391,7 @@ namespace TUI_Web.Data
             return false;
         }
 
-        private void Cursor_EVENT_SAVE_PositionChanged(object sender, CursorEventPositionArgs e)
+        private void SaveCursor_EVENT_PositionChanged(object sender, CursorEventPositionArgs e)
         {
             CursorElement cSender = (CursorElement)sender;
             foreach (KeyValuePair<int, CursorElement> cursor in cursorElements)
@@ -324,7 +418,8 @@ namespace TUI_Web.Data
                 }
                 else
                 {
-                    if (!tryToSaveObject(obj))
+                    //if (!tryToSaveObject(obj))
+                    if (isWebElement(obj))
                     {
                         if (!cursorElements.ContainsKey(obj.SymbolID))
                         {
@@ -360,7 +455,7 @@ namespace TUI_Web.Data
                                 if (cursor != null)
                                 {
                                     cursor.writeCursorPosition(obj, rows);
-                                    cursor.getElement().type = getType(obj);
+                                    cursor.getElement().type = getWebType(obj);
 
                                     setOverlayElement(cursor);
 

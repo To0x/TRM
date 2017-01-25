@@ -6,14 +6,14 @@ using System.Text;
 using TUI_Web;
 using TUI_Web.Settings;
 
-public enum ElementTypes { None, Topic, Text, Graphic, Delete, Save };
+public enum ElementTypes { None, Topic, Text, Graphic, Delete, Save, Unknown };
+public enum ManipulationTypes { FontColor, FontSize, LookAndFeel, Unknown };
 
 public class OverlayElement : GridElement
 {
-    
     public OverlayElement()
     {
-        base.setOverlay(null);
+        setOverlay(null);
     }
 }
 
@@ -29,6 +29,7 @@ public class GridElement
 
 	// was für ein Typ ist das Element?
 	public ElementTypes type = ElementTypes.None;
+    private ManipulationTypes manType = ManipulationTypes.Unknown;
 
     // existiert ein aktuelles Element auf der Oberfläche, welches das gesicherte Element überdeckt?
     private OverlayElement overlayElement = null;
@@ -37,18 +38,6 @@ public class GridElement
     {
         cursor = SettingsControler.DEFAULT_CURSOR_STATE;
     }
-
-	/*public GridElement(long s_id, int f_id, float xpos, float ypos, float angle) : base(s_id, f_id, xpos, ypos, angle)
-    {
-    }
-
-    public GridElement(TuioObject o) : base(o)
-    {
-    */
-	public void paint(Graphics g)
-	{
-		// needed?
-	}
 
 	public void setCursor()
 	{
@@ -63,5 +52,15 @@ public class GridElement
     public OverlayElement getOverlay()
     {
         return overlayElement;
+    }
+
+    public void setManipulationType(ManipulationTypes type)
+    {
+        manType = type;
+    }
+
+    public ManipulationTypes getManipulationType()
+    {
+        return manType;
     }
 }

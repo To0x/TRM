@@ -23,6 +23,8 @@ namespace TUI_Web
 
         private Settings.SettingsControler settingsControler { get; set; } = null;
 
+        private Data.StyleData styleData { get; set; } = null;
+
 		// is the website already opened in browser?
 		private bool opened = false;
 
@@ -36,36 +38,42 @@ namespace TUI_Web
             inputControler = new Data.InputControler();
             dataControler = new Data.DataControler(Data.TestData.generateTestData());
             exportControler = new Export.ExportControler(settingsControler);
+            styleData = new Data.StyleData();
 
 			// if new data comes over the TCP-Connection send it to DataControler
             inputControler.EVENT_newObject += dataControler.InputListener_EVENT_newObject;
             inputControler.EVENT_removeObject += dataControler.InputListener_EVENT_removeObject;
             inputControler.EVENT_updateObject += dataControler.InputListener_EVENT_updateObject;
 
+            dataControler.EVENT_styleChanged += styleData.changeStyle;
+
 			// if the html-export is finished call appControler function
             exportControler.EVENT_exportFinished += ExportControler_EVENT_exportFinished;
 
-			// if the data if parsed to internal format correctly call exportToHtml
-			dataControler.EVENT_dataUpdated += exportControler.exportToHtml;
+            // if the data if parsed to internal format correctly call exportToHtml
+            dataControler.EVENT_dataUpdated += DataControler_EVENT_dataUpdated;
 
 			// start udp-listener (connect also creates a new thread)
 			inputControler.connect();
 
 			// create the first html-file to open
-			exportControler.exportToHtml(this, dataControler.getData(), true);
+			exportControler.exportToHtml(this, dataControler.getData(), true, styleData);
 
 
             mainView.EVENT_View_SaveClicked += dataControler.save;
+        }
+
+        private void DataControler_EVENT_dataUpdated(object sender, System.Collections.Generic.List<GridRow> e)
+        {
+            exportControler.exportToHtml(sender, e, styleData);
         }
 
         private void ExportControler_EVENT_exportFinished(object sender, EventArgs e)
         {
 			if (!opened)
 			{
-				// open webbrowser?
 				opened =! opened;
 			}
-			// do smth.
         }
 
         public void close()
