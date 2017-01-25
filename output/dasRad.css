@@ -227,8 +227,8 @@ body .col-md-12 {
 }
  
 .LookAndFeel-1 > .col-md-12, .LookAndFeel-2 > .col-md-12, .LookAndFeel-3 > .col-md-12, .LookAndFeel-4 > .col-md-12, .LookAndFeel-5 > .col-md-12
-.LookAndFeel-6 > .col-md-12, .LookAndFeel-7 > .col-md-12, .LookAndFeel-8 > .col-md-12, .LookAndFeel-9 > .col-md-12, .LookAndFeel-10 > .col-md-12
-{
+.LookAndFeel-6 > .col-md-12, .LookAndFeel-7 > .col-md-12, .LookAndFeel-8 > .col-md-12, .LookAndFeel-9 > .col-md-12, .LookAndFeel-10 > .col-md-12,
+body.col-md-12 {
 	border:none;
 	border-radius:0px;
 }

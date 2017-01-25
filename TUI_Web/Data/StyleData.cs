@@ -37,14 +37,23 @@ namespace TUI_Web.Data
 
         private void checkRanges()
         {
-            if (fontColor > Settings.SettingsControler.STYLE_COUNT || fontColor < 1)
+            if (fontColor > Settings.SettingsControler.STYLE_COUNT)
                 fontColor = 1;
 
-            if (fontStyle > Settings.SettingsControler.STYLE_COUNT ||fontStyle < 1)
+            if (fontColor < 1)
+                fontColor = Settings.SettingsControler.STYLE_COUNT;
+
+            if (fontStyle > Settings.SettingsControler.STYLE_COUNT)
                 fontStyle = 1;
 
-            if (lookAndFeel > Settings.SettingsControler.STYLE_COUNT || lookAndFeel < 1)
+            if (fontStyle < 1)
+                fontStyle = Settings.SettingsControler.STYLE_COUNT;
+
+            if (lookAndFeel > Settings.SettingsControler.STYLE_COUNT)
                 lookAndFeel = 1;
+
+            if (lookAndFeel < 1)
+                lookAndFeel = Settings.SettingsControler.STYLE_COUNT;
         }
 
         public int getFontColor()

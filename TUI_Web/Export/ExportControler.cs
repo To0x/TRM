@@ -79,8 +79,11 @@ namespace TUI_Web.Export
         {
             // don´t know why, but if the website is empty, we need to set the lengt to zero
             // otherwise the flush will print information of the website before (this might been longer than the new one -.^) 
-            if (fs.Position == 0)
-                fs.SetLength(0L);
+            if (fs != null)
+            {
+                if (fs.Position == 0)
+                    fs.SetLength(0L);
+            }
 
             writer.Flush();
             writer.Close();
