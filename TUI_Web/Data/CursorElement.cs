@@ -241,12 +241,14 @@ namespace TUI_Web.Data
                 {
                     sizeArgs.changeType = SizeChangingType.DecreaseOther;
                     sizeArgs.changeSteps = 1;
+                    angle = obj.AngleDegrees;
                     EVENT_SizeChanged(this, sizeArgs);
                 }
                 else if (isDecreased(obj))
                 {
                     sizeArgs.changeType = SizeChangingType.IncreaseOther;
                     sizeArgs.changeSteps = -1;
+                    angle = obj.AngleDegrees;
                     EVENT_SizeChanged(this, sizeArgs);
                 }
             }

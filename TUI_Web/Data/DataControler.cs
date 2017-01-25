@@ -155,7 +155,7 @@ namespace TUI_Web.Data
                     break;
 
                 case 6:
-                    type = ManipulationTypes.FontSize;
+                    type = ManipulationTypes.FontStyle;
                     break;
 
                 case 7:
@@ -347,11 +347,21 @@ namespace TUI_Web.Data
                     // add cursor to list? 
                     manipulationCursor = new CursorElement();
                     manipulationCursor.getElement().setManipulationType(getManipulationType(obj));
+                    manipulationCursor.setAngle(obj.AngleDegrees);
                     manipulationCursor.EVENT_SizeChanged += ManipulationCursor_EVENT_SizeChanged;
                     manipulationCursor.writeCursorSize(obj);
                 }
                 else
-                    manipulationCursor.writeCursorSize(obj);
+                {
+                    if (manipulationCursor.getElement().getManipulationType() == getManipulationType(obj))
+                        manipulationCursor.writeCursorSize(obj);
+                    else
+                    {
+                        manipulationCursor.getElement().setManipulationType(getManipulationType(obj));
+                        manipulationCursor.setAngle(obj.AngleDegrees);
+                        manipulationCursor.writeCursorSize(obj);
+                    }
+                }
 
                 return true;
             }
@@ -365,14 +375,17 @@ namespace TUI_Web.Data
             if (e.changeType == SizeChangingType.DecreaseOther ||
                 e.changeType == SizeChangingType.RemoveLast)
             {
+                Console.WriteLine("changed++");
                 // size increased
             }
             else if (e.changeType == SizeChangingType.IncreaseOther)
             {
+                Console.WriteLine("changed--");
                 // size decreased
             }
 
             EVENT_styleChanged?.Invoke(sender, e);
+            EVENT_dataUpdated?.Invoke(sender, rows);
         }
 
         private bool tryToSaveObject(TuioObject obj)

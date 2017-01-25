@@ -23,7 +23,7 @@ namespace TUI_Web.Data
                     fontColor += changingSteps;
                     break;
 
-                case ManipulationTypes.FontSize:
+                case ManipulationTypes.FontStyle:
                     fontStyle += changingSteps;
                     break;
 
@@ -32,18 +32,18 @@ namespace TUI_Web.Data
                     break;
             }
 
-            checkMaximumRange();
+            checkRanges();
         }
 
-        private void checkMaximumRange()
+        private void checkRanges()
         {
-            if (fontColor > Settings.SettingsControler.STYLE_COUNT)
+            if (fontColor > Settings.SettingsControler.STYLE_COUNT || fontColor < 1)
                 fontColor = 1;
 
-            if (fontStyle > Settings.SettingsControler.STYLE_COUNT)
+            if (fontStyle > Settings.SettingsControler.STYLE_COUNT ||fontStyle < 1)
                 fontStyle = 1;
 
-            if (lookAndFeel > Settings.SettingsControler.STYLE_COUNT)
+            if (lookAndFeel > Settings.SettingsControler.STYLE_COUNT || lookAndFeel < 1)
                 lookAndFeel = 1;
         }
 
