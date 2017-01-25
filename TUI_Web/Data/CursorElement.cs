@@ -216,13 +216,13 @@ namespace TUI_Web.Data
             }
             else
             {
-                // || (obj.AngleDegrees < 0 + SettingsControler.sizeStep() && angle > 360 - SettingsControler.sizeStep()))
+                // TODO check
+                // alter winkel größer als 360 - sizeStep UND neuer Winkel kleiner als 0 + sizeStep UND neuer Winkel+360 > alter-Winkel+SizeStep 
                 if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
                     
                 {
                     return false;
                 }
-                // ||  obj.AngleDegrees > 360 - SettingsControler.sizeStep() && angle < 0 + SettingsControler.sizeStep())
                 else if (obj.AngleDegrees < angle - SettingsControler.sizeStep())
                 {
                     return true;

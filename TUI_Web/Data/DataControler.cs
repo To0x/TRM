@@ -360,8 +360,7 @@ namespace TUI_Web.Data
 
         private void ManipulationCursor_EVENT_SizeChanged(object sender, CursorEventSizeArgs e)
         {
-            Console.WriteLine("style changed!!!");
-
+            // TODO needed?
             CursorElement cursor = (CursorElement)sender;
             if (e.changeType == SizeChangingType.DecreaseOther ||
                 e.changeType == SizeChangingType.RemoveLast)
