@@ -151,7 +151,8 @@ namespace TUI_Web.Data
 
 			for (int i = 0; i <= rows[position.row].elementCount; i++)
             {
-				if (p.X < ((float)(i + 1) / (float)rows[position.row].elementCount)) 
+                //if (p.X < ((float)(i + 1) / (float)rows[position.row].elementCount)) 
+                if (p.X < ((float)(i + 1) / SettingsControler.GRID_ELEMENTS))
                 {
                     if (position.cell != i)
                     {
@@ -175,27 +176,43 @@ namespace TUI_Web.Data
         {
             if (SettingsControler.INVERTED)
             {
-                if (obj.AngleDegrees < angle - SettingsControler.sizeStep())
+                if (obj.AngleDegrees < angle - SettingsControler.sizeStep() &&
+                     (angle - obj.AngleDegrees < SettingsControler.sizeStep()*2) ||
+                    angle < 0 + SettingsControler.sizeStep() &&
+                    obj.AngleDegrees > 360 - SettingsControler.sizeStep() &&
+                    angle + 360 > (obj.AngleDegrees + SettingsControler.sizeStep()))
                 {
+                    Console.WriteLine("INVERTED++");
                     return true;
                 }
+                else
+                    return false;
+
+                /*
                 else if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
                 {
                     return false;
                 }
+                */
             }
             else
             {
-                // || (obj.AngleDegrees < 0 + SettingsControler.sizeStep() && angle > 360 - SettingsControler.sizeStep()))
-                if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
+                //Console.WriteLine("obj-angle: " + obj.AngleDegrees + "SAVED: " + angle);
+                if (obj.AngleDegrees > angle + SettingsControler.sizeStep() ||
+                    obj.AngleDegrees < 0 + SettingsControler.sizeStep() &&
+                    angle > 360 - SettingsControler.sizeStep() &&
+                    obj.AngleDegrees + 360 > (angle + SettingsControler.sizeStep()))
                 {
                     return true;
                 }
-                // || obj.AngleDegrees > 360 - SettingsControler.sizeStep() && angle < 0 + SettingsControler.sizeStep())
+                else
+                    return false;
+                /* || obj.AngleDegrees > 360 - SettingsControler.sizeStep() && angle < 0 + SettingsControler.sizeStep())
                 else if (obj.AngleDegrees < angle - SettingsControler.sizeStep() )
                 {
                     return false;
                 }
+                */
             }
 
             return false;
@@ -205,14 +222,32 @@ namespace TUI_Web.Data
         {
             if (SettingsControler.INVERTED)
             {
-                if (obj.AngleDegrees < angle - SettingsControler.sizeStep())
+                Console.WriteLine("obj-angle: " + obj.AngleDegrees + "SAVED: " + angle);
+                /*if (obj.AngleDegrees < angle - SettingsControler.sizeStep())
                 {
                     return false;
                 }
-                else if (obj.AngleDegrees > angle + SettingsControler.sizeStep())
+                */
+                if ((obj.AngleDegrees > angle + SettingsControler.sizeStep() 
+                    && obj.AngleDegrees < angle + SettingsControler.sizeStep()*2) ||
+                   obj.AngleDegrees < 0 + SettingsControler.sizeStep() &&
+                   angle > 360 - SettingsControler.sizeStep() &&
+                   obj.AngleDegrees + 360 > (angle + SettingsControler.sizeStep()))
                 {
+                    Console.WriteLine("INVERTED--");
                     return true;
                 }
+                else
+                    return false;
+
+
+                /*
+                 if (obj.AngleDegrees > angle + SettingsControler.sizeStep() ||
+                    obj.AngleDegrees < 0 + SettingsControler.sizeStep() &&
+                    angle > 360 - SettingsControler.sizeStep() &&
+                    obj.AngleDegrees + 360 > (angle + SettingsControler.sizeStep()))
+                 */
+
             }
             else
             {
@@ -223,10 +258,10 @@ namespace TUI_Web.Data
                 {
                     return false;
                 }
-                else if (obj.AngleDegrees < angle - SettingsControler.sizeStep())
-                {
-                    return true;
-                }
+                //else if (obj.AngleDegrees < angle - SettingsControler.sizeStep())
+                //{
+                //    return true;
+                //}
             }
 
             return false;
@@ -256,7 +291,7 @@ namespace TUI_Web.Data
 
         public void writeCursorSize(TUIO.TuioObject obj, GridRow row)
         {
-            Console.WriteLine("obj-angle: " + obj.AngleDegrees + "SAVED: " + angle);
+            //Console.WriteLine("obj-angle: " + obj.AngleDegrees + "SAVED: " + angle);
 
             if ((int)(obj.AngleDegrees) != (int)(angle))
             {

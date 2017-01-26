@@ -8,6 +8,8 @@ namespace TUI_Web.Data
 	class DataControler
 	{
         #region VARIABLES
+
+        public event EventHandler EVENT_Saved;
         public event EventHandler<List<GridRow>> EVENT_dataUpdated;
         public event EventHandler<CursorEventSizeArgs> EVENT_styleChanged;
 		private List<GridRow> rows;
@@ -15,6 +17,11 @@ namespace TUI_Web.Data
         private Dictionary<int, myTimer> timer;
 
         private CursorElement saveCursor = null;
+        private myTimer saveTimer = null;
+
+        private CursorElement removeCursor = null;
+        private myTimer removeTimer = null;
+
         private CursorElement manipulationCursor = null;
 
         private object lockObject = new object();
@@ -47,6 +54,7 @@ namespace TUI_Web.Data
 
         public void save(object sender = null, object e = null)
         {
+            Console.WriteLine("SAVE");
             for (int i = 0; i < SettingsControler.LINES_DISPLAYED; i++)
             {
                 for (int j = 0; j < SettingsControler.GRID_ELEMENTS; j++)
@@ -55,14 +63,21 @@ namespace TUI_Web.Data
 
                     if (currentElement.getOverlay() != null)
                     {
-                        currentElement = currentElement.getOverlay();
+                        OverlayElement ole = currentElement.getOverlay();
+                        currentElement.size = ole.size;
+                        currentElement.type = ole.type;
+                        currentElement.cursor = false;
                         currentElement.setOverlay(null);
                     }
                 }
             }
             cursorElements.Clear();
+            saveCursor = null;
+
+            EVENT_Saved?.Invoke(this, null);
         }
 
+        /*
         private void save(CursorElement cursor)
         {
             if (getElement(cursor.getPosition().row, cursor.getPosition().cell).getOverlay() != null)
@@ -72,6 +87,7 @@ namespace TUI_Web.Data
                 Console.WriteLine("SAVED: " + cursor.getPosition().row + " ; " + cursor.getPosition().cell);
             }
         }
+        */
 
         #region private
         private CursorElement createNewElement(TUIO.TuioObject obj)
@@ -94,7 +110,7 @@ namespace TUI_Web.Data
             return null;
 		}
 
-        private CursorElement getExistingElement(TUIO.TuioObject obj) 
+        private CursorElement getExistingElement(TuioObject obj) 
 		{
 			CursorElement cursor = default(CursorElement);
 			cursorElements.TryGetValue(obj.SymbolID, out cursor);
@@ -116,6 +132,12 @@ namespace TUI_Web.Data
 			rows[cursor.getRow()].elements[cursor.getCell()] = cursor.getElement();
         }
 
+        private void removeRealElement(CursorElement cursor)
+        {
+            rows[cursor.getRow()].elements[cursor.getCell()] = new GridElement();
+            getElement(cursor.getRow(), cursor.getCell()).setOverlay(null);
+        }
+
 		private ElementTypes getWebType(TuioObject obj)
 		{
 			ElementTypes type = ElementTypes.None;
@@ -135,6 +157,10 @@ namespace TUI_Web.Data
 
                 case 3:
                     type = ElementTypes.Save;
+                    break;
+
+                case 4:
+                    type = ElementTypes.Remove;
                     break;
 
                 default:
@@ -194,17 +220,23 @@ namespace TUI_Web.Data
             return rows[row].elements[cell];
         }
 
-        private void removeObject(TuioObject removeableObj)
+        private void removeObject(CursorElement cursor, int key)
         {
             try
             {
-                CursorElement cursor = getExistingElement(removeableObj);
+                if (cursor == null)
+                {
+                    if (cursor.getElement().type == ElementTypes.Save)
+                    {
+                        saveCursor = null;
+                    }
+                }
 
                 if (cursor.affected)
                     rows[cursor.getRow()].decreaseSizeAffected();
 
                 removeOverlayElement(cursor);
-                cursorElements.Remove(removeableObj.SymbolID);
+                cursorElements.Remove(key);
                 //Console.WriteLine("remove object -->" + removeableObj.SymbolID);
                 EVENT_dataUpdated?.Invoke(this, rows);
             }
@@ -212,6 +244,12 @@ namespace TUI_Web.Data
             {
                 Console.WriteLine("removeObject " + e.Message);
             }
+        }
+
+        private void removeObject(TuioObject removeableObj)
+        {
+            CursorElement cursor = getExistingElement(removeableObj);
+            removeObject(cursor, removeableObj.SymbolID);
         }
         #endregion
 
@@ -225,7 +263,9 @@ namespace TUI_Web.Data
                     myTimer objTimer = null;
                     timer.TryGetValue(obj.SymbolID, out objTimer);
                     objTimer.stopTimer();
-                    Console.WriteLine("[{0}]CANCEL: {1}", obj.SymbolID, DateTime.Now.ToString("h:mm:ss.fff"));
+                    
+                    if (SettingsControler.SHOW_TIMER_INFORMATION)
+                        Console.WriteLine("[{0}]CANCEL: {1}", obj.SymbolID, DateTime.Now.ToString("h:mm:ss.fff"));
                     timer.Remove(obj.SymbolID);
                 }
 
@@ -292,7 +332,7 @@ namespace TUI_Web.Data
         {
             lock (lockObject)
             {
-                if (!cursorElements.ContainsKey(obj.SymbolID))
+                if (!cursorElements.ContainsKey(obj.SymbolID) && getWebType(obj) != ElementTypes.Save)
                     return;
 
                 if (timer.ContainsKey(obj.SymbolID))
@@ -307,7 +347,8 @@ namespace TUI_Web.Data
                     timer.Add(obj.SymbolID, myTimer);
                     myTimer.EVENT_TimeOut += MyTimer_EVENT_TimeOut;
 
-                    Console.WriteLine("[{0}]START: {1}", obj.SymbolID, DateTime.Now.ToString("h:mm:ss.fff"));
+                    if (SettingsControler.SHOW_TIMER_INFORMATION)
+                        Console.WriteLine("[{0}]START: {1}", obj.SymbolID, DateTime.Now.ToString("h:mm:ss.fff"));
                     myTimer.startTimer(obj);
                 }
             }
@@ -331,13 +372,32 @@ namespace TUI_Web.Data
                     tryToSaveObject(obj);
                     return false;
                 }
-                else
+                else if (webType == ElementTypes.Remove)
                 {
-                    return true;
+                    tryToRemoveObject(obj);
+                    return false;
                 }
+                else
+                    return true;
             }
         }
 
+        private void tryToRemoveObject(TuioObject obj)
+        {
+            if (getWebType(obj) == ElementTypes.Remove)
+            {
+                if (removeCursor == null)
+                {
+                    removeCursor = new CursorElement();
+                    removeCursor.EVENT_PositionChanged += RemoveCursor_EVENT_PositionChanged;
+                    removeCursor.writeCursorPosition(obj, rows);
+                }
+                else
+                {
+                    removeCursor.writeCursorPosition(obj, rows);
+                }
+            }
+        }
         private bool tryToChangeStyle(TuioObject obj)
         {
             if (getManipulationType(obj) != ManipulationTypes.Unknown)
@@ -392,28 +452,81 @@ namespace TUI_Web.Data
         {
             if (getWebType(obj) == ElementTypes.Save)
             {
-                if (saveCursor == null)
+                if (saveCursor == null && saveTimer == null)
                 {
                     saveCursor = new CursorElement();
-                    saveCursor.EVENT_PositionChanged += SaveCursor_EVENT_PositionChanged;
+                    saveTimer = new myTimer();
+                    saveTimer.EVENT_TimeOut += SaveTimer_EVENT_TimeOut;
+
+                    if (SettingsControler.SHOW_TIMER_INFORMATION)
+                        Console.WriteLine("[{0}]START: {1}", obj.SymbolID, DateTime.Now.ToString("h:mm:ss.fff"));
+                    saveTimer.startTimer(obj, SettingsControler.SAVE_WAITTIME);
                 }
-                saveCursor.writeCursorPosition(obj, rows);
+                else
+                {
+                    saveTimer.startTimer(obj, SettingsControler.SAVE_WAITTIME);
+                }
                 return true;
             }
             return false;
         }
 
-        private void SaveCursor_EVENT_PositionChanged(object sender, CursorEventPositionArgs e)
+        private void SaveTimer_EVENT_TimeOut(object sender, TuioObject e)
+        {
+            save();
+        }
+
+        
+        private void RemoveCursor_EVENT_PositionChanged(object sender, CursorEventPositionArgs e)
         {
             CursorElement cSender = (CursorElement)sender;
+            removeCursor = cSender;
+
+            if (removeTimer == null)
+            {
+                removeTimer = new myTimer();
+                removeTimer.EVENT_TimeOut += RemoveTimer_EVENT_TimeOut;
+                removeTimer.startTimer(null, SettingsControler.REMOVE_WAITTIME);
+            }
+            else
+            {
+                removeTimer.startTimer(null, SettingsControler.REMOVE_WAITTIME);
+            }
+
+
+            
+
+            /*
             foreach (KeyValuePair<int, CursorElement> cursor in cursorElements)
             {
                 if (cSender.getPosition().row == cursor.Value.getPosition().row &&
                     cSender.getPosition().cell == cursor.Value.getPosition().cell)
                 {
-                    save(cSender);
+                    removeObject(cSender, cursor.Key);
+                    // remove
+                    //save(cSender);
+                    //removeObject(cSender.getElement());
                 }
             }
+            */
+            
+        }
+
+        private void RemoveTimer_EVENT_TimeOut(object sender, TuioObject e)
+        {
+            if (removeCursor != null)
+            {
+                removeRealElement(removeCursor);
+                EVENT_dataUpdated?.Invoke(this, rows);
+            }
+
+            /*
+            if (getElement(cSender.getRow(), cSender.getCell()) != null)
+            {
+                removeRealElement(cSender);
+                EVENT_dataUpdated?.Invoke(this, rows);
+            }
+            */
         }
 
         public void InputListener_EVENT_newObject(object sender, TuioObject obj)
@@ -425,7 +538,9 @@ namespace TUI_Web.Data
                     myTimer objTimer = null;
                     timer.TryGetValue(obj.SymbolID, out objTimer);
                     objTimer.stopTimer();
-                    Console.WriteLine("[{0}]CANCEL: {1}", obj.SymbolID ,  DateTime.Now.ToString("h:mm:ss.fff"));
+
+                    if (SettingsControler.SHOW_TIMER_INFORMATION)
+                        Console.WriteLine("[{0}]CANCEL: {1}", obj.SymbolID ,  DateTime.Now.ToString("h:mm:ss.fff"));
                     timer.Remove(obj.SymbolID);
                 }
                 else
@@ -627,7 +742,8 @@ namespace TUI_Web.Data
         {
             if (timer.ContainsKey(timeObject.SymbolID))
             {
-                Console.WriteLine("[{0}]STOP: {1}", timeObject.SymbolID, DateTime.Now.ToString("h:mm:ss.fff"));
+                if (SettingsControler.SHOW_TIMER_INFORMATION)
+                    Console.WriteLine("[{0}]STOP: {1}", timeObject.SymbolID, DateTime.Now.ToString("h:mm:ss.fff"));
                 removeObject(timeObject);
                 timer.Remove(timeObject.SymbolID);
             }

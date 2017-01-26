@@ -16,10 +16,10 @@ namespace TUI_Web
         private bool stopFlag = false;
 
         // wait 1000ms until the timer triggers the event
-        public void startTimer(TuioObject timerObject, int timeTillEvent = -1)
+        public void startTimer(TuioObject timerObject = null, int timeTillEvent = -1)
         {
             if (timeTillEvent < 0)
-                timeTillEvent = Settings.SettingsControler.REMOVE_WAITTIME;
+                timeTillEvent = Settings.SettingsControler.DELETE_WAITTIME;
 
             timeObject = timerObject;
             Timer timer = new Timer(trigger, null, timeTillEvent, 0);

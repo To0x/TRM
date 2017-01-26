@@ -6,7 +6,7 @@ using System.Text;
 using TUI_Web;
 using TUI_Web.Settings;
 
-public enum ElementTypes { None, Topic, Text, Graphic, Delete, Save, Unknown };
+public enum ElementTypes { None, Topic, Text, Graphic, Delete, Save, Remove, Unknown };
 public enum ManipulationTypes { FontColor, FontStyle, LookAndFeel, Unknown };
 
 public class OverlayElement : GridElement

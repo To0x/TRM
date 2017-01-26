@@ -6,6 +6,7 @@ namespace TUI_Web
     class AppControler
     {
         #region variables
+
         // not implemented yet
         public Version version { get; private set; } = null;
 
@@ -27,6 +28,7 @@ namespace TUI_Web
 
 		// is the website already opened in browser?
 		private bool opened = false;
+        private int saved_Timer = 0;
 
         #endregion
 
@@ -47,6 +49,8 @@ namespace TUI_Web
 
             dataControler.EVENT_styleChanged += styleData.changeStyle;
 
+            dataControler.EVENT_Saved += DataControler_EVENT_Saved;
+
 			// if the html-export is finished call appControler function
             exportControler.EVENT_exportFinished += ExportControler_EVENT_exportFinished;
 
@@ -63,8 +67,21 @@ namespace TUI_Web
             mainView.EVENT_View_SaveClicked += dataControler.save;
         }
 
+        private void DataControler_EVENT_Saved(object sender, EventArgs e)
+        {
+            styleData.setSaved(true);
+        }
+
         private void DataControler_EVENT_dataUpdated(object sender, System.Collections.Generic.List<GridRow> e)
         {
+            if (saved_Timer > Settings.SettingsControler.SAVE_FRAMES)
+            {
+                styleData.setSaved(false);
+                saved_Timer = 0;
+            }
+            else
+                saved_Timer++;
+
             exportControler.exportToHtml(sender, e, styleData);
         }
 

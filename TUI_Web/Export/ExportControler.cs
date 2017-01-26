@@ -81,8 +81,19 @@ namespace TUI_Web.Export
             // otherwise the flush will print information of the website before (this might been longer than the new one -.^) 
             if (fs != null)
             {
+                
                 if (fs.Position == 0)
                     fs.SetLength(0L);
+
+                /*else if (fs.Position < fs.Length)
+                {
+                    fs.SetLength(fs.Position);
+                    //fs.Position = fs.Length;
+                    /*while (fs.Position < fs.Length)
+                        fs.WriteByte((byte)00);
+                }
+            */
+                
             }
 
             writer.Flush();
@@ -94,25 +105,28 @@ namespace TUI_Web.Export
         // is also used to create the file or open it (if it exists)
         private void createHtmlWriter(bool initial)
         {
-            string filePath = settingsControler.getFileLocation();
-            fs = null;
-            if (!File.Exists(filePath))
+            if (!writingInProgress)
             {
-                fs = new FileStream(filePath, FileMode.Create);
-            }
-            else
-            {
-                // TODO! only if the program restarts!
-                if (initial)
+                string filePath = settingsControler.getFileLocation();
+                fs = null;
+                if (!File.Exists(filePath))
                 {
-                    File.Delete(filePath);
                     fs = new FileStream(filePath, FileMode.Create);
                 }
                 else
-                    fs = new FileStream(filePath, FileMode.Open);
+                {
+                    // TODO! only if the program restarts!
+                    if (initial)
+                    {
+                        File.Delete(filePath);
+                        fs = new FileStream(filePath, FileMode.Create);
+                    }
+                    else
+                        fs = new FileStream(filePath, FileMode.Open);
+                }
+                StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8);
+                writer = new HtmlTextWriter(streamWriter);
             }
-            StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8);
-            writer = new HtmlTextWriter(streamWriter);
         }
 
         private void writeElement(GridElement element)
@@ -185,10 +199,16 @@ namespace TUI_Web.Export
 
         private void writeBody(List<GridRow> rows, Data.StyleData style)
         {
+            string containerClass = String.Format("col-xs-{0} col-md-{0} fontStyle-{1} fontColor-{2} LookAndFeel-{3}",
+                SettingsControler.BOOTSTRAP_SIZE, style.getFontStyle(), style.getFontColor(), style.getLookAndFeel());
+
+            if (style.getSaved())
+            {
+                containerClass += String.Format(" saved");
+            }
+
             // TODO
-            writer.AddAttribute(HtmlTextWriterAttribute.Class,
-                String.Format("col-xs-{0} col-md-{0} fontStyle-{1} fontColor-{2} LookAndFeel-{3}", 
-                SettingsControler.BOOTSTRAP_SIZE, style.getFontStyle(), style.getFontColor(), style.getLookAndFeel()));
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, containerClass);
 
 
             writer.RenderBeginTag(HtmlTextWriterTag.Body);

@@ -1,100 +1,92 @@
 @import url('https://fonts.googleapis.com/css?family=Arsenal|Cormorant:400,700|Lato:400,700|Lora:400,700|Open+Sans+Condensed:300,700|Overpass:400,700|Raleway:400,700|Roboto+Condensed:400,700|Roboto:400,700|Rokkitt:400,700');
 
-/******
-https://color.adobe.com/de/Farbdesign-3-color-theme-9107610/edit/?copy=true&base=2&rule=Custom&selected=3&name=Kopie%20von%20Farbdesign%203&mode=rgb&rgbvalues=0.760768147637067,0.7372379749788318,0.6901767849473934,0.7058630224668614,0.6627241078395679,0.5842893724677373,0.2509503216989992,0.2078143468980215,0.1803643734461815,0.09017318588354253,0.1372289918103108,0.1489931666400531,0.3411457318509443,0.3215381886519123,0.3136951830703294&swatchOrder=0,1,2,3,4
-https://color.adobe.com/de/Dnt08-color-theme-9107666/edit/?copy=true
-https://color.adobe.com/de/DNT30-color-theme-9107665/edit/?copy=true
-https://color.adobe.com/de/Palette-de-couleurs-14-color-theme-9107682/edit/?copy=true
-https://color.adobe.com/de/cedarbrae-color-theme-9107685/edit/?copy=true
-https://color.adobe.com/de/Color-Theme-21-color-theme-9107688/edit/?copy=true
-https://color.adobe.com/de/flow2-color-theme-9107824/edit/?copy=true
-https://color.adobe.com/de/Color-Theme-6-color-theme-9107857/edit/?copy=true
-*/
-/*Color-Set1*/
-/*
-Hintergrund		- 
-Col-Border		- 
-Cursor			- 
-Color			- 
 
-fontStyle		-
+/*Color-set*/
+/*
+		c-Pool:	#9C733B, #445165, #9C9FA9, #111F28, #7E878C
+		fon: #958D81 , #732611, #5F2329, #BEC8DB, #7E878C, #9D9E9D, #C0B9B3, #0B1A26, #292929
+		other: #507C6D, #4A68A4, #D0644E, #F3F3F3, #eee
+		off: #A5886C, #EFCFAF, #958D81
 */
 
 /*Farben Start*/
 /******************/
 /*LookAndFeel Start*/
+
 body.LookAndFeel-1{
-	background-color: #081C29;
+	background-color: #2D3437;
+	border-color: #D0644E;
+
 }
 body.LookAndFeel-1 .cursor{
-	border-color: #FDA533;
+	border-color: #B64A4B;
 }
-.LookAndFeel-1 div, .LookAndFeel-1 p{
-	border-color:#fff;
+.LookAndFeel-1 div, .LookAndFeel-1 p, body.LookAndFeel-1 div, body.LookAndFeel-1 img, body.LookAndFeel-1 h1{
+	border-color:#D0644E;
 }
 
 body.LookAndFeel-2{
-	background-color: #2E2F2F;
+	background-color: #081C29;
 }
 body.LookAndFeel-2 .cursor{
-	border-color: #481427;
+	border-color: #BEC8DB;
 }
-.LookAndFeel-2 div, .LookAndFeel-2 p{
-	border-color:#eee;
+.LookAndFeel-2 div, .LookAndFeel-2 p, body.LookAndFeel-2 div, body.LookAndFeel-2 img, body.LookAndFeel-2 h1{
+	border-color:#9C9FA9;
 }
 
 body.LookAndFeel-3{
-	background-color: #F3F3F3;
+	background-color: #142940;
 }
 body.LookAndFeel-3 .cursor{
-	border-color: #4A68A4;
+	border-color: #BEC8DB;
 }
-.LookAndFeel-3 div, .LookAndFeel-3 p{
-	border-color:#D0644E;
+.LookAndFeel-3 div, .LookAndFeel-3 p, body.LookAndFeel-3 div, body.LookAndFeel-3 img, body.LookAndFeel-3 h1{
+	border-color:#BEC1AC;
 }
 
 
 body.LookAndFeel-4{
-	background-color: #507C6D;
+	background-color: #1B4039;
 }
 body.LookAndFeel-4 .cursor{
-	border-color: #B2A08C;
+	border-color: #BEC8DB;		/*#FDA533*/
 }
-.LookAndFeel-4 div, .LookAndFeel-4 p{
-	border-color:#B2A08C;
-}
+.LookAndFeel-4 div, .LookAndFeel-4 p, body.LookAndFeel-4 div, body.LookAndFeel-4 img, body.LookAndFeel-4 h1{
+	border-color:#BEC8DB;		/*#FDA533*/
+}	
 
 
 body.LookAndFeel-5{
-	background-color: #;
+	background-color: #5A1F14;
 }
 body.LookAndFeel-5 .cursor{
-	border-color: #;
+	border-color: #B2A08C;
 }
-.LookAndFeel-5 div, .LookAndFeel-5 p{
-	border-color:#;
+.LookAndFeel-5 div, .LookAndFeel-5 p, body.LookAndFeel-5 div, body.LookAndFeel-5 img, body.LookAndFeel-5 h1{
+	border-color:#EFCFAF;
 }
 
 
 body.LookAndFeel-6{
-	background-color: #;
+	background-color: #fcffff;
 }
 body.LookAndFeel-6 .cursor{
-	border-color: #;
+	border-color: 	#9C9FA9;
 }
-.LookAndFeel-6 div, .LookAndFeel-6 p{
-	border-color:#;
+.LookAndFeel-6 div, .LookAndFeel-6 p, body.LookAndFeel-6 div, body.LookAndFeel-6 img, body.LookAndFeel-6 h1{
+	border-color:	#7E878C;
 }
 
 
 body.LookAndFeel-7{
-	background-color: #;
+	background-color: #A6ACBA;
 }
 body.LookAndFeel-7 .cursor{
-	border-color: #;
+	border-color: #4B6E72;
 }
 .LookAndFeel-7 div, .LookAndFeel-7 p{
-	border-color:#;
+	border-color:#4B6E72;
 }
 
 
@@ -135,22 +127,22 @@ body.LookAndFeel-10 .cursor{
 /******************/
 /*fontColor Start*/
 body.fontColor-1{
-	color:#eee;
+	color:#EFCFAF;
 }
 body.fontColor-2{
 	color:#eee;
 }
 body.fontColor-3{
-	color:#333;
+	color:#7E878C;
 }
 body.fontColor-4{
-	color:#BF8C3B;
+	color:#4A68A4;
 }
 body.fontColor-5{
-	color:#eee;
+	color:#507C6D;
 }
 body.fontColor-6{
-	color:#eee;
+	color:#292929;
 }
 body.fontColor-7{
 	color:#eee;
@@ -176,25 +168,25 @@ body.fontColor-10{
 	font-family: 'Arsenal', sans-serif;
 }
 .fontStyle-3 h1, .fontStyle-3 p{
-	font-family: 'Overpass', sans-serif;
+	font-family: 'Cormorant', sans-serif;
 }
 .fontStyle-4 h1, .fontStyle-4 p{
-	font-family: 'Lato', sans-serif;
+	font-family: 'Open Sans Condensed', sans-serif;
 }
 .fontStyle-5 h1, .fontStyle-5 p{
-	font-family: 'Roboto Condensed', sans-serif;
+	font-family: 'Lora', sans-serif;
 }
 .fontStyle-6 h1, .fontStyle-6 p{
 	font-family: 'Raleway', sans-serif;
 }
 .fontStyle-7 h1, .fontStyle-7 p{
-	font-family: 'Cormorant', sans-serif;
+	font-family: 'Overpass', sans-serif;
 }
 .fontStyle-8 h1, .fontStyle-8 p{
-	font-family: 'Open Sans Condensed', sans-serif;
+	font-family: 'Roboto Condensed', sans-serif;
 }
 .fontStyle-9 h1, .fontStyle-9 p{
-	font-family: 'Lora', sans-serif;
+	font-family: 'Lato', sans-serif;
 }
 .fontStyle-10 h1, .fontStyle-10 p{
 	font-family: 'Rokkitt', sans-serif;
@@ -212,6 +204,13 @@ body .col-md-12 {
   overflow: hidden;
   min-height:120px;
 }
+body.col-md-12{
+	border:0px;
+}
+/*.col-md-0{
+	display:none;
+}*/
+
 .cursor{
 	border-width: 5px!important;
 	border-style:dashed;
@@ -227,8 +226,8 @@ body .col-md-12 {
 }
  
 .LookAndFeel-1 > .col-md-12, .LookAndFeel-2 > .col-md-12, .LookAndFeel-3 > .col-md-12, .LookAndFeel-4 > .col-md-12, .LookAndFeel-5 > .col-md-12
-.LookAndFeel-6 > .col-md-12, .LookAndFeel-7 > .col-md-12, .LookAndFeel-8 > .col-md-12, .LookAndFeel-9 > .col-md-12, .LookAndFeel-10 > .col-md-12,
-body.col-md-12 {
+.LookAndFeel-6 > .col-md-12, .LookAndFeel-7 > .col-md-12, .LookAndFeel-8 > .col-md-12, .LookAndFeel-9 > .col-md-12, .LookAndFeel-10 > .col-md-12
+{
 	border:none;
 	border-radius:0px;
 }

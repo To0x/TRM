@@ -11,6 +11,7 @@ namespace TUI_Web.Data
         private int fontColor = 1;
         private int fontStyle = 1;
         private int lookAndFeel = 1;
+        private bool saved = false;
 
         public void changeStyle(object sender, CursorEventSizeArgs sizeArgs)
         {
@@ -28,7 +29,7 @@ namespace TUI_Web.Data
                     break;
 
                 case ManipulationTypes.LookAndFeel:
-                    lookAndFeel += lookAndFeel;
+                    lookAndFeel += changingSteps;
                     break;
             }
 
@@ -69,6 +70,16 @@ namespace TUI_Web.Data
         public int getLookAndFeel()
         {
             return lookAndFeel;
+        }
+
+        public void setSaved(bool saveState)
+        {
+            saved = saveState;
+        }
+
+        public bool getSaved()
+        {
+            return saved;
         }
     }
 }
