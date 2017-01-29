@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'Arsenal';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/fonts/Arsenal-regular/Arsenal-regular.eot');
+  src: url('/fonts/Arsenal-regular/Arsenal-regular.eot?#iefix') format('embedded-opentype'),
+       local('Arsenal Regular'),
+       local('Arsenal-regular'),
+       url('/fonts/Arsenal-regular/Arsenal-regular.woff2') format('woff2'),
+       url('/fonts/Arsenal-regular/Arsenal-regular.woff') format('woff'),
+       url('/fonts/Arsenal-regular/Arsenal-regular.ttf') format('truetype'),
+       url('/fonts/Arsenal-regular/Arsenal-regular.svg#Arsenal') format('svg');
+}
+
+@font-face {
+  font-family: 'Arsenal';
+  font-weight: 700;
+  font-style: normal;
+  src: url('/fonts/Arsenal-700/Arsenal-700.eot');
+  src: url('/fonts/Arsenal-700/Arsenal-700.eot?#iefix') format('embedded-opentype'),
+       local('Arsenal Bold'),
+       local('Arsenal-700'),
+       url('/fonts/Arsenal-700/Arsenal-700.woff2') format('woff2'),
+       url('/fonts/Arsenal-700/Arsenal-700.woff') format('woff'),
+       url('/fonts/Arsenal-700/Arsenal-700.ttf') format('truetype'),
+       url('/fonts/Arsenal-700/Arsenal-700.svg#Arsenal') format('svg');
+}
+

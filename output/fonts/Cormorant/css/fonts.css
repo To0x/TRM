@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'Cormorant';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/fonts/Cormorant-regular/Cormorant-regular.eot');
+  src: url('/fonts/Cormorant-regular/Cormorant-regular.eot?#iefix') format('embedded-opentype'),
+       local('Cormorant Regular'),
+       local('Cormorant-regular'),
+       url('/fonts/Cormorant-regular/Cormorant-regular.woff2') format('woff2'),
+       url('/fonts/Cormorant-regular/Cormorant-regular.woff') format('woff'),
+       url('/fonts/Cormorant-regular/Cormorant-regular.ttf') format('truetype'),
+       url('/fonts/Cormorant-regular/Cormorant-regular.svg#Cormorant') format('svg');
+}
+
+@font-face {
+  font-family: 'Cormorant';
+  font-weight: 700;
+  font-style: normal;
+  src: url('/fonts/Cormorant-700/Cormorant-700.eot');
+  src: url('/fonts/Cormorant-700/Cormorant-700.eot?#iefix') format('embedded-opentype'),
+       local('Cormorant Bold'),
+       local('Cormorant-700'),
+       url('/fonts/Cormorant-700/Cormorant-700.woff2') format('woff2'),
+       url('/fonts/Cormorant-700/Cormorant-700.woff') format('woff'),
+       url('/fonts/Cormorant-700/Cormorant-700.ttf') format('truetype'),
+       url('/fonts/Cormorant-700/Cormorant-700.svg#Cormorant') format('svg');
+}
+

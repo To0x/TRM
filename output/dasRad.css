@@ -1,27 +1,186 @@
-@import url('https://fonts.googleapis.com/css?family=Arsenal|Cormorant:400,700|Lato:400,700|Lora:400,700|Open+Sans+Condensed:300,700|Overpass:400,700|Raleway:400,700|Roboto+Condensed:400,700|Roboto:400,700|Rokkitt:400,700');
+/*Fonts Start*/
+@font-face {
+  font-family: 'Arsenal';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/fonts/Arsenal/fonts/Arsenal-regular/Arsenal-regular.eot');
+  src: url('/fonts/Arsenal/fonts/Arsenal-regular/Arsenal-regular.eot?#iefix') format('embedded-opentype'),
+       local('Arsenal Regular'),
+       local('Arsenal-regular'),
+       url('/fonts/Arsenal/fonts/Arsenal-regular/Arsenal-regular.woff2') format('woff2'),
+       url('/fonts/Arsenal/fonts/Arsenal-regular/Arsenal-regular.woff') format('woff'),
+       url('/fonts/Arsenal/fonts/Arsenal-regular/Arsenal-regular.ttf') format('truetype'),
+       url('/fonts/Arsenal/fonts/Arsenal-regular/Arsenal-regular.svg#Arsenal') format('svg');
+}
+
+@font-face {
+  font-family: 'Arsenal';
+  font-weight: 700;
+  font-style: normal;
+  src: url('/fonts/Arsenal/fonts/Arsenal-700/Arsenal-700.eot');
+  src: url('/fonts/Arsenal/fonts/Arsenal-700/Arsenal-700.eot?#iefix') format('embedded-opentype'),
+       local('Arsenal Bold'),
+       local('Arsenal-700'),
+       url('/fonts/Arsenal/fonts/Arsenal-700/Arsenal-700.woff2') format('woff2'),
+       url('/fonts/Arsenal/fonts/Arsenal-700/Arsenal-700.woff') format('woff'),
+       url('/fonts/Arsenal/fonts/Arsenal-700/Arsenal-700.ttf') format('truetype'),
+       url('/fonts/Arsenal/fonts/Arsenal-700/Arsenal-700.svg#Arsenal') format('svg');
+}
+
+@font-face {
+  font-family: 'Cormorant';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/fonts/Cormorant/fonts/Cormorant-regular/Cormorant-regular.eot');
+  src: url('/fonts/Cormorant/fonts/Cormorant-regular/Cormorant-regular.eot?#iefix') format('embedded-opentype'),
+       local('Cormorant Regular'),
+       local('Cormorant-regular'),
+       url('/fonts/Cormorant/fonts/Cormorant-regular/Cormorant-regular.woff2') format('woff2'),
+       url('/fonts/Cormorant/fonts/Cormorant-regular/Cormorant-regular.woff') format('woff'),
+       url('/fonts/Cormorant/fonts/Cormorant-regular/Cormorant-regular.ttf') format('truetype'),
+       url('/fonts/Cormorant/fonts/Cormorant-regular/Cormorant-regular.svg#Cormorant') format('svg');
+}
+
+@font-face {
+  font-family: 'Cormorant';
+  font-weight: 700;
+  font-style: normal;
+  src: url('/fonts/Cormorant/fonts/Cormorant-700/Cormorant-700.eot');
+  src: url('/fonts/Cormorant/fonts/Cormorant-700/Cormorant-700.eot?#iefix') format('embedded-opentype'),
+       local('Cormorant Bold'),
+       local('Cormorant-700'),
+       url('/fonts/Cormorant/fonts/Cormorant-700/Cormorant-700.woff2') format('woff2'),
+       url('/fonts/Cormorant/fonts/Cormorant-700/Cormorant-700.woff') format('woff'),
+       url('/fonts/Cormorant/fonts/Cormorant-700/Cormorant-700.ttf') format('truetype'),
+       url('/fonts/Cormorant/fonts/Cormorant-700/Cormorant-700.svg#Cormorant') format('svg');
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/fonts/Lora/fonts/Lora-regular/Lora-regular.eot');
+  src: url('/fonts/Lora/fonts/Lora-regular/Lora-regular.eot?#iefix') format('embedded-opentype'),
+       local('Lora Regular'),
+       local('Lora-regular'),
+       url('/fonts/Lora/fonts/Lora-regular/Lora-regular.woff2') format('woff2'),
+       url('/fonts/Lora/fonts/Lora-regular/Lora-regular.woff') format('woff'),
+       url('/fonts/Lora/fonts/Lora-regular/Lora-regular.ttf') format('truetype'),
+       url('/fonts/Lora/fonts/Lora-regular/Lora-regular.svg#Lora') format('svg');
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-weight: 700;
+  font-style: normal;
+  src: url('/fonts/Lora/fonts/Lora-700/Lora-700.eot');
+  src: url('/fonts/Lora/fonts/Lora-700/Lora-700.eot?#iefix') format('embedded-opentype'),
+       local('Lora Bold'),
+       local('Lora-700'),
+       url('/fonts/Lora/fonts/Lora-700/Lora-700.woff2') format('woff2'),
+       url('/fonts/Lora/fonts/Lora-700/Lora-700.woff') format('woff'),
+       url('/fonts/Lora/fonts/Lora-700/Lora-700.ttf') format('truetype'),
+       url('/fonts/Lora/fonts/Lora-700/Lora-700.svg#Lora') format('svg');
+}
 
 
-/*Color-set*/
+@font-face {
+  font-family: 'Open Sans Condensed';
+  font-weight: 700;
+  font-style: normal;
+  src: url('/fonts/Open-Sans-Condensed/fonts/Open-Sans-Condensed-700/Open-Sans-Condensed-700.eot');
+  src: url('/fonts/Open-Sans-Condensed/fonts/Open-Sans-Condensed-700/Open-Sans-Condensed-700.eot?#iefix') format('embedded-opentype'),
+       local('Open Sans Condensed Bold'),
+       local('Open-Sans-Condensed-700'),
+       url('/fonts/Open-Sans-Condensed/fonts/Open-Sans-Condensed-700/Open-Sans-Condensed-700.woff2') format('woff2'),
+       url('/fonts/Open-Sans-Condensed/fonts/Open-Sans-Condensed-700/Open-Sans-Condensed-700.woff') format('woff'),
+       url('/fonts/Open-Sans-Condensed/fonts/Open-Sans-Condensed-700/Open-Sans-Condensed-700.ttf') format('truetype'),
+       url('/fonts/Open-Sans-Condensed/fonts/Open-Sans-Condensed-700/Open-Sans-Condensed-700.svg#OpenSansCondensed') format('svg');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/fonts/Open-Sans-Condensed/fonts/Raleway-regular/Raleway-regular.eot');
+  src: url('/fonts/Open-Sans-Condensed/fonts/Raleway-regular/Raleway-regular.eot?#iefix') format('embedded-opentype'),
+       local('Raleway'),
+       local('Raleway-regular'),
+       url('/fonts/Open-Sans-Condensed/fonts/Raleway-regular/Raleway-regular.woff2') format('woff2'),
+       url('/fonts/Open-Sans-Condensed/fonts/Raleway-regular/Raleway-regular.woff') format('woff'),
+       url('/fonts/Open-Sans-Condensed/fonts/Raleway-regular/Raleway-regular.ttf') format('truetype'),
+       url('/fonts/Open-Sans-Condensed/fonts/Raleway-regular/Raleway-regular.svg#Raleway') format('svg');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-weight: 700;
+  font-style: normal;
+  src: url('/fonts/Raleway/fonts/Raleway-700/Raleway-700.eot');
+  src: url('/fonts/Raleway/fonts/Raleway-700/Raleway-700.eot?#iefix') format('embedded-opentype'),
+       local('Raleway Bold'),
+       local('Raleway-700'),
+       url('/fonts/Raleway/fonts/Raleway-700/Raleway-700.woff2') format('woff2'),
+       url('/fonts/Raleway/fonts/Raleway-700/Raleway-700.woff') format('woff'),
+       url('/fonts/Raleway/fonts/Raleway-700/Raleway-700.ttf') format('truetype'),
+       url('/fonts/Raleway/fonts/Raleway-700/Raleway-700.svg#Raleway') format('svg');
+}
+
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/fonts/Roboto/fonts/Roboto-regular/Roboto-regular.eot');
+  src: url('/fonts/Roboto/fonts/Roboto-regular/Roboto-regular.eot?#iefix') format('embedded-opentype'),
+       local('Roboto'),
+       local('Roboto-regular'),
+       url('/fonts/Roboto/fonts/Roboto-regular/Roboto-regular.woff2') format('woff2'),
+       url('/fonts/Roboto/fonts/Roboto-regular/Roboto-regular.woff') format('woff'),
+       url('/fonts/Roboto/fonts/Roboto-regular/Roboto-regular.ttf') format('truetype'),
+       url('/fonts/Roboto/fonts/Roboto-regular/Roboto-regular.svg#Roboto') format('svg');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 700;
+  font-style: normal;
+  src: url('/fonts/Roboto/fonts/Roboto-700/Roboto-700.eot');
+  src: url('/fonts/Roboto/fonts/Roboto-700/Roboto-700.eot?#iefix') format('embedded-opentype'),
+       local('Roboto Bold'),
+       local('Roboto-700'),
+       url('/fonts/Roboto/fonts/Roboto-700/Roboto-700.woff2') format('woff2'),
+       url('/fonts/Roboto/fonts/Roboto-700/Roboto-700.woff') format('woff'),
+       url('/fonts/Roboto/fonts/Roboto-700/Roboto-700.ttf') format('truetype'),
+       url('/fonts/Roboto/fonts/Roboto-700/Roboto-700.svg#Roboto') format('svg');
+}
+
+
+/*Fonts Ende*/
+/*Farben Start*/
 /*
 		c-Pool:	#9C733B, #445165, #9C9FA9, #111F28, #7E878C
 		fon: #958D81 , #732611, #5F2329, #BEC8DB, #7E878C, #9D9E9D, #C0B9B3, #0B1A26, #292929
 		other: #507C6D, #4A68A4, #D0644E, #F3F3F3, #eee
 		off: #A5886C, #EFCFAF, #958D81
 */
-
-/*Farben Start*/
 /******************/
 /*LookAndFeel Start*/
 
+.saved .cursor{
+	-webkit-box-shadow: 0px 0px 21px 5px rgba(7,240,1,1);
+    -moz-box-shadow: 0px 0px 21px 5px rgba(7,240,1,1);
+	box-shadow: 0px 0px 21px 5px rgba(7,240,1,1);
+}
+
+
 body.LookAndFeel-1{
 	background-color: #2D3437;
-	border-color: #D0644E;
-
 }
 body.LookAndFeel-1 .cursor{
 	border-color: #B64A4B;
 }
-.LookAndFeel-1 div, .LookAndFeel-1 p, body.LookAndFeel-1 div, body.LookAndFeel-1 img, body.LookAndFeel-1 h1{
+.LookAndFeel-1 div, .LookAndFeel-1 p{
 	border-color:#D0644E;
 }
 
@@ -31,7 +190,7 @@ body.LookAndFeel-2{
 body.LookAndFeel-2 .cursor{
 	border-color: #BEC8DB;
 }
-.LookAndFeel-2 div, .LookAndFeel-2 p, body.LookAndFeel-2 div, body.LookAndFeel-2 img, body.LookAndFeel-2 h1{
+.LookAndFeel-2 div, .LookAndFeel-2	 p{
 	border-color:#9C9FA9;
 }
 
@@ -41,7 +200,7 @@ body.LookAndFeel-3{
 body.LookAndFeel-3 .cursor{
 	border-color: #BEC8DB;
 }
-.LookAndFeel-3 div, .LookAndFeel-3 p, body.LookAndFeel-3 div, body.LookAndFeel-3 img, body.LookAndFeel-3 h1{
+.LookAndFeel-3 div, .LookAndFeel-3 p{
 	border-color:#BEC1AC;
 }
 
@@ -50,10 +209,10 @@ body.LookAndFeel-4{
 	background-color: #1B4039;
 }
 body.LookAndFeel-4 .cursor{
-	border-color: #BEC8DB;		/*#FDA533*/
+	border-color: #FDA533;		/*#BEC8DB*/
 }
-.LookAndFeel-4 div, .LookAndFeel-4 p, body.LookAndFeel-4 div, body.LookAndFeel-4 img, body.LookAndFeel-4 h1{
-	border-color:#BEC8DB;		/*#FDA533*/
+.LookAndFeel-4 div, .LookAndFeel-4 p{
+	border-color:#FDA533;		/*#BEC8DB*/
 }	
 
 
@@ -63,7 +222,7 @@ body.LookAndFeel-5{
 body.LookAndFeel-5 .cursor{
 	border-color: #B2A08C;
 }
-.LookAndFeel-5 div, .LookAndFeel-5 p, body.LookAndFeel-5 div, body.LookAndFeel-5 img, body.LookAndFeel-5 h1{
+.LookAndFeel-5 div, .LookAndFeel-5 p{
 	border-color:#EFCFAF;
 }
 
@@ -74,7 +233,7 @@ body.LookAndFeel-6{
 body.LookAndFeel-6 .cursor{
 	border-color: 	#9C9FA9;
 }
-.LookAndFeel-6 div, .LookAndFeel-6 p, body.LookAndFeel-6 div, body.LookAndFeel-6 img, body.LookAndFeel-6 h1{
+.LookAndFeel-6 div, .LookAndFeel-6 p{
 	border-color:	#7E878C;
 }
 
@@ -207,10 +366,6 @@ body .col-md-12 {
 body.col-md-12{
 	border:0px;
 }
-/*.col-md-0{
-	display:none;
-}*/
-
 .cursor{
 	border-width: 5px!important;
 	border-style:dashed;

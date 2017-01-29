@@ -95,8 +95,8 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TUIO11_NET-1.1.5\TUIO11_NET\TUIO_LIB.csproj">
-      <Project>{3cbf7d4a-ce06-490d-80da-580d02c268de}</Project>
+    <ProjectReference Include="..\..\TUIO11_NET\TUIO_LIB.csproj">
+      <Project>{3CBF7D4A-CE06-490D-80DA-580D02C268DE}</Project>
       <Name>TUIO_LIB</Name>
     </ProjectReference>
   </ItemGroup>

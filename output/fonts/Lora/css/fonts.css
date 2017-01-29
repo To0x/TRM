@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'Lora';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/fonts/Lora-regular/Lora-regular.eot');
+  src: url('/fonts/Lora-regular/Lora-regular.eot?#iefix') format('embedded-opentype'),
+       local('Lora Regular'),
+       local('Lora-regular'),
+       url('/fonts/Lora-regular/Lora-regular.woff2') format('woff2'),
+       url('/fonts/Lora-regular/Lora-regular.woff') format('woff'),
+       url('/fonts/Lora-regular/Lora-regular.ttf') format('truetype'),
+       url('/fonts/Lora-regular/Lora-regular.svg#Lora') format('svg');
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-weight: 700;
+  font-style: normal;
+  src: url('/fonts/Lora-700/Lora-700.eot');
+  src: url('/fonts/Lora-700/Lora-700.eot?#iefix') format('embedded-opentype'),
+       local('Lora Bold'),
+       local('Lora-700'),
+       url('/fonts/Lora-700/Lora-700.woff2') format('woff2'),
+       url('/fonts/Lora-700/Lora-700.woff') format('woff'),
+       url('/fonts/Lora-700/Lora-700.ttf') format('truetype'),
+       url('/fonts/Lora-700/Lora-700.svg#Lora') format('svg');
+}
+

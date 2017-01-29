@@ -204,6 +204,7 @@ namespace TUI_Web.Export
 
             if (style.getSaved())
             {
+				Console.WriteLine("JUST SAVED------");
                 containerClass += String.Format(" saved");
             }
 

@@ -56,7 +56,7 @@ namespace TUI_Web.Settings
 
         public static bool SHOW_TIMER_INFORMATION = false;
 
-        public static int SAVE_FRAMES = 5;
+        public static int SAVE_FRAMES = 5000;
 
         // how much degrees have the angle to be changed, before the size will also be changed.
         // for example: 360° includes 10 steps for size-changing. Each 36° degrees, the size will be changed

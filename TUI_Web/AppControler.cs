@@ -26,6 +26,8 @@ namespace TUI_Web
 
         private Data.StyleData styleData { get; set; } = null;
 
+		private myTimer savedTimer = null;
+
 		// is the website already opened in browser?
 		private bool opened = false;
         private int saved_Timer = 0;
@@ -69,18 +71,37 @@ namespace TUI_Web
 
         private void DataControler_EVENT_Saved(object sender, EventArgs e)
         {
-            styleData.setSaved(true);
+			if (savedTimer == null)
+			{
+				styleData.setSaved(true);
+				savedTimer = new myTimer();
+				savedTimer.EVENT_TimeOut += Timer_EVENT_TimeOut;
+				savedTimer.startTimer(null, Settings.SettingsControler.SAVE_FRAMES);
+				//exportControler.exportToHtml(null, dataControler.getData(), false, styleData);
+				Console.WriteLine("START SAVE!!!!!!!");
+			} 
         }
+
+		private void Timer_EVENT_TimeOut(object sender, TUIO.TuioObject args)
+		{
+			Console.WriteLine("STOP SAVE!!!!!!!");
+			styleData.setSaved(false);
+			savedTimer = null;
+			exportControler.exportToHtml(null, dataControler.getData(), false, styleData);
+		}
 
         private void DataControler_EVENT_dataUpdated(object sender, System.Collections.Generic.List<GridRow> e)
         {
-            if (saved_Timer > Settings.SettingsControler.SAVE_FRAMES)
-            {
-                styleData.setSaved(false);
-                saved_Timer = 0;
-            }
-            else
-                saved_Timer++;
+			/*if (styleData.getSaved())
+			{
+				if (saved_Timer > Settings.SettingsControler.SAVE_FRAMES)
+				{
+					styleData.setSaved(false);
+					saved_Timer = 0;
+				}
+				else
+					saved_Timer++;
+			}*/
 
             exportControler.exportToHtml(sender, e, styleData);
         }
